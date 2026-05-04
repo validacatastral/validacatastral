@@ -6,201 +6,112 @@
 <title>DataForge — Vista Pública</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600&display=swap');
-:root{--bg-void:#080b0f;--bg-deep:#0d1117;--bg-panel:#161e28;--bg-card:#1a2433;--border:#1e3045;--accent-cyan:#00d4ff;--accent-blue:#0e7aff;--accent-green:#00ff88;--accent-amber:#ffaa00;--accent-red:#ff3860;--accent-purple:#8b5cf6;--text-prime:#e8f0fa;--text-mute:#6b8aaa;--text-dim:#3d5875;--font-mono:'Share Tech Mono',monospace;--font-head:'Rajdhani',sans-serif;--font-body:'Exo 2',sans-serif;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg-void);color:var(--text-prime);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;}
-body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.012) 2px,rgba(0,212,255,0.012) 4px);pointer-events:none;z-index:9999;}
-
-.topbar{background:var(--bg-deep);border-bottom:1px solid var(--border);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;}
-.topbar-logo{font-family:var(--font-head);font-size:20px;font-weight:700;letter-spacing:3px;color:var(--accent-cyan);flex-shrink:0;}
-.topbar-logo small{color:var(--text-mute);font-size:11px;letter-spacing:1px;font-weight:400;margin-left:6px;}
-.topbar-right{display:flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:11px;color:var(--text-mute);}
-.topbar-clock{color:var(--accent-cyan);font-size:13px;letter-spacing:1px;}
-.topbar-users{display:flex;align-items:center;gap:6px;background:rgba(0,255,136,0.07);border:1px solid rgba(0,255,136,0.2);border-radius:20px;padding:3px 10px;}
-.users-dot{width:6px;height:6px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 6px var(--accent-green);animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-.public-badge{background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.25);color:var(--accent-green);font-size:10px;padding:2px 8px;border-radius:10px;letter-spacing:1px;}
-
-.main{flex:1;padding:20px;}
-.page-header{margin-bottom:20px;}
-.page-header h1{font-family:var(--font-head);font-size:24px;font-weight:700;letter-spacing:2px;margin-bottom:3px;}
-.page-header h1 span{color:var(--accent-cyan);}
-.page-header p{color:var(--text-mute);font-size:12px;}
-.panel-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:18px;}
-.panel-title{font-family:var(--font-head);font-size:13px;font-weight:600;letter-spacing:2px;color:var(--accent-blue);text-transform:uppercase;margin-bottom:14px;}
-
-.type-tabs{display:flex;gap:8px;flex-wrap:wrap;}
-.type-tab{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-head);letter-spacing:1px;color:var(--text-mute);background:var(--bg-card);transition:all 0.15s;}
-.type-tab:hover{border-color:var(--accent-blue);color:var(--text-prime);}
-.type-tab.active{background:rgba(14,122,255,0.15);border-color:var(--accent-blue);color:var(--accent-cyan);}
-
-.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;}
-.search-box{flex:1;min-width:180px;position:relative;}
-.search-box input{width:100%;background:var(--bg-deep);border:1px solid var(--border);color:var(--text-prime);padding:7px 12px 7px 30px;border-radius:6px;font-family:var(--font-body);font-size:12px;outline:none;transition:border-color 0.15s;}
-.search-box input:focus{border-color:var(--accent-blue);}
-.search-icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:11px;}
-.btn{padding:7px 13px;border-radius:6px;border:1px solid;font-family:var(--font-head);font-size:12px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
-.btn-success{background:rgba(0,255,136,0.08);border-color:rgba(0,255,136,0.4);color:var(--accent-green);}
-.btn-success:hover{background:rgba(0,255,136,0.18);}
-.btn-primary{background:rgba(14,122,255,0.08);border-color:rgba(14,122,255,0.4);color:var(--accent-cyan);}
-.btn-primary:hover{background:rgba(14,122,255,0.18);}
-.btn-amber{background:rgba(255,170,0,0.08);border-color:rgba(255,170,0,0.4);color:var(--accent-amber);}
-.btn-amber:hover{background:rgba(255,170,0,0.18);}
-.results-info{font-family:var(--font-mono);font-size:11px;color:var(--text-mute);padding:2px 0 8px;}
-
-/* ACTIVE FILTERS CHIPS */
-.active-filters{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
-.filter-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(14,122,255,0.1);border:1px solid rgba(14,122,255,0.3);color:var(--accent-cyan);font-family:var(--font-mono);font-size:10px;padding:2px 8px;border-radius:10px;}
-.filter-chip button{background:none;border:none;color:var(--accent-red);cursor:pointer;font-size:11px;line-height:1;padding:0;}
-
-/* TABLE */
-.table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);max-height:520px;overflow-y:auto;position:relative;}
-table{width:100%;border-collapse:collapse;font-size:12px;}
-thead{background:var(--bg-deep);position:sticky;top:0;z-index:20;}
-th{text-align:left;font-family:var(--font-mono);font-size:10px;color:var(--accent-blue);letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;position:relative;}
-.th-btn{display:flex;align-items:center;gap:4px;padding:9px 10px;cursor:pointer;user-select:none;transition:color 0.15s;}
-.th-btn:hover{color:var(--accent-cyan);}
-.th-btn.filtered{color:var(--accent-amber);}
-.sort-arrow{font-size:9px;opacity:0.6;}
-.filter-icon{font-size:10px;margin-left:2px;}
-
-/* EXCEL-STYLE FILTER DROPDOWN */
-.filter-dropdown{position:absolute;top:100%;left:0;min-width:220px;max-width:300px;background:var(--bg-panel);border:1px solid var(--accent-blue);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:1000;padding:0;overflow:hidden;}
-.fd-header{padding:10px 12px 6px;border-bottom:1px solid var(--border);}
-.fd-search{width:100%;background:var(--bg-deep);border:1px solid var(--border);color:var(--text-prime);padding:5px 8px;border-radius:5px;font-family:var(--font-body);font-size:11px;outline:none;margin-bottom:6px;}
-.fd-search:focus{border-color:var(--accent-blue);}
-.fd-select-all{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;color:var(--text-mute);padding:3px 0;cursor:pointer;user-select:none;}
-.fd-select-all:hover{color:var(--text-prime);}
-.fd-list{max-height:200px;overflow-y:auto;padding:4px 0;}
-.fd-list::-webkit-scrollbar{width:4px;}
-.fd-list::-webkit-scrollbar-track{background:var(--bg-deep);}
-.fd-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
-.fd-item{display:flex;align-items:center;gap:7px;padding:5px 12px;cursor:pointer;font-size:11px;transition:background 0.1s;user-select:none;}
-.fd-item:hover{background:rgba(14,122,255,0.08);}
-.fd-item input[type="checkbox"]{accent-color:var(--accent-blue);width:13px;height:13px;flex-shrink:0;cursor:pointer;}
-.fd-item span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;}
-.fd-footer{display:flex;gap:6px;padding:8px 10px;border-top:1px solid var(--border);background:var(--bg-deep);}
-.fd-btn{flex:1;padding:5px;border-radius:5px;border:1px solid;font-family:var(--font-head);font-size:11px;font-weight:600;letter-spacing:1px;cursor:pointer;text-align:center;}
-.fd-btn-ok{background:rgba(14,122,255,0.15);border-color:var(--accent-blue);color:var(--accent-cyan);}
-.fd-btn-ok:hover{background:rgba(14,122,255,0.28);}
-.fd-btn-cancel{background:none;border-color:var(--border);color:var(--text-mute);}
-.fd-btn-cancel:hover{color:var(--text-prime);}
-
-td{padding:7px 10px;color:var(--text-prime);border-bottom:1px solid rgba(30,48,69,0.4);white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis;vertical-align:middle;}
-tr:nth-child(even) td{background:rgba(22,30,40,0.4);}
-tr:hover td{background:rgba(14,122,255,0.05);}
-tr:last-child td{border-bottom:none;}
-tr.row-done .sc{border-left:3px solid var(--accent-green);}
-
-.sc{white-space:nowrap;vertical-align:top;padding-top:8px;min-width:170px;}
-.status-btns{display:flex;gap:4px;align-items:center;margin-bottom:3px;}
-.btn-check{padding:3px 8px;border-radius:4px;border:1px solid rgba(0,255,136,0.2);background:transparent;color:var(--text-dim);font-family:var(--font-mono);font-size:9px;cursor:pointer;transition:all 0.2s;}
-.btn-check:hover{background:rgba(0,255,136,0.1);border-color:var(--accent-green);color:var(--accent-green);}
-.btn-check.done{background:rgba(0,255,136,0.1);border-color:var(--accent-green);color:var(--accent-green);cursor:default;}
-.btn-cmt{padding:3px 8px;border-radius:4px;border:1px solid rgba(14,122,255,0.2);background:transparent;color:var(--text-dim);font-family:var(--font-mono);font-size:9px;cursor:pointer;transition:all 0.2s;}
-.btn-cmt:hover{background:rgba(14,122,255,0.1);border-color:var(--accent-blue);color:var(--accent-blue);}
-.btn-cmt.has{border-color:var(--accent-amber);color:var(--accent-amber);background:rgba(255,170,0,0.07);}
-.cmt-preview{font-family:var(--font-mono);font-size:9px;color:var(--accent-amber);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
-.pagination{display:flex;align-items:center;gap:6px;justify-content:space-between;margin-top:10px;font-family:var(--font-mono);font-size:11px;color:var(--text-mute);flex-wrap:wrap;}
-.page-btns{display:flex;gap:4px;flex-wrap:wrap;}
-.page-btn{padding:3px 9px;border-radius:4px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-mute);cursor:pointer;font-family:var(--font-mono);font-size:11px;transition:all 0.15s;}
-.page-btn:hover,.page-btn.cur{border-color:var(--accent-blue);color:var(--accent-cyan);background:rgba(14,122,255,0.1);}
-
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:2000;display:flex;align-items:center;justify-content:center;animation:fadein 0.15s;}
-.modal-box{background:var(--bg-panel);border:1px solid var(--accent-blue);border-radius:12px;padding:24px;width:400px;max-width:92vw;box-shadow:0 0 50px rgba(14,122,255,0.15);}
-.modal-title{font-family:var(--font-head);font-size:15px;font-weight:700;letter-spacing:2px;margin-bottom:4px;}
-.modal-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-mute);margin-bottom:14px;word-break:break-all;}
-.modal-body{font-size:12px;color:var(--text-mute);margin-bottom:16px;line-height:1.6;}
-.modal-label{font-family:var(--font-mono);font-size:10px;color:var(--text-mute);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:block;}
-textarea{background:var(--bg-deep);border:1px solid var(--border);color:var(--text-prime);padding:8px 10px;border-radius:6px;font-family:var(--font-body);font-size:12px;outline:none;transition:border-color 0.15s;width:100%;height:80px;resize:vertical;margin-bottom:12px;}
-textarea:focus{border-color:var(--accent-blue);}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
-.btn-cancel{padding:6px 14px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text-mute);font-family:var(--font-head);font-size:11px;font-weight:600;letter-spacing:1px;cursor:pointer;}
-.btn-go-green{padding:6px 14px;border-radius:5px;border:1px solid var(--accent-green);background:rgba(0,255,136,0.1);color:var(--accent-green);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;}
-.btn-go-blue{padding:6px 14px;border-radius:5px;border:1px solid var(--accent-blue);background:rgba(14,122,255,0.1);color:var(--accent-cyan);font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;}
-
-.empty-state{text-align:center;padding:40px;color:var(--text-dim);font-size:12px;}
-.loading{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:12px;color:var(--text-mute);padding:20px;}
-.spinner{width:15px;height:15px;border:2px solid var(--border);border-top-color:var(--accent-cyan);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes fadein{from{opacity:0}to{opacity:1}}
-#toast{position:fixed;bottom:20px;right:20px;z-index:9998;display:flex;flex-direction:column;gap:6px;}
-.toast-msg{background:var(--bg-panel);border:1px solid var(--accent-blue);color:var(--text-prime);padding:9px 14px;border-radius:7px;font-size:11px;font-family:var(--font-mono);box-shadow:0 0 18px rgba(0,0,0,0.4);animation:slideup 0.2s ease;max-width:280px;}
-@keyframes slideup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600&display=swap');
+  :root {
+    --bg-void:#080b0f;--bg-deep:#0d1117;--bg-panel:#161e28;--bg-card:#1a2433;--bg-hover:#1f2d3d;
+    --border:#1e3045;--accent-cyan:#00d4ff;--accent-blue:#0e7aff;--accent-purple:#8b5cf6;
+    --accent-green:#00ff88;--accent-amber:#ffaa00;--accent-red:#ff3860;
+    --text-prime:#e8f0fa;--text-mute:#6b8aaa;--text-dim:#3d5875;
+    --font-mono:'Share Tech Mono',monospace;--font-head:'Rajdhani',sans-serif;--font-body:'Exo 2',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg-void);color:var(--text-prime);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;}
+  body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.015) 2px,rgba(0,212,255,0.015) 4px);pointer-events:none;z-index:9999;}
+  .topbar{background:var(--bg-deep);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .topbar-logo{font-family:var(--font-head);font-size:20px;font-weight:700;letter-spacing:3px;color:var(--accent-cyan);display:flex;align-items:center;gap:10px;}
+  .topbar-logo span{color:var(--text-mute);font-size:12px;letter-spacing:1px;font-weight:400;}
+  .topbar-status{display:flex;align-items:center;gap:16px;font-family:var(--font-mono);font-size:11px;color:var(--text-mute);}
+  .status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 8px var(--accent-green);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .main{flex:1;overflow-y:auto;padding:24px;background:var(--bg-void);}
+  .page-header{margin-bottom:24px;}
+  .page-header h1{font-family:var(--font-head);font-size:26px;font-weight:700;letter-spacing:2px;color:var(--text-prime);margin-bottom:4px;}
+  .page-header h1 span{color:var(--accent-cyan);}
+  .page-header p{color:var(--text-mute);font-size:13px;}
+  .panel-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:20px;}
+  .panel-title{font-family:var(--font-head);font-size:14px;font-weight:600;letter-spacing:2px;color:var(--accent-blue);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .btn{padding:8px 18px;border-radius:6px;border:1px solid;font-family:var(--font-head);font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
+  .btn-success{background:rgba(0,255,136,0.1);border-color:var(--accent-green);color:var(--accent-green);}
+  .btn-success:hover{background:rgba(0,255,136,0.2);}
+  .btn-amber{background:rgba(255,170,0,0.1);border-color:var(--accent-amber);color:var(--accent-amber);}
+  .btn-amber:hover{background:rgba(255,170,0,0.2);}
+  .type-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+  .type-tab{padding:6px 14px;border-radius:20px;border:1px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-head);letter-spacing:1px;color:var(--text-mute);background:var(--bg-card);transition:all 0.15s;}
+  .type-tab:hover{border-color:var(--accent-blue);color:var(--text-prime);}
+  .type-tab.active{background:rgba(14,122,255,0.15);border-color:var(--accent-blue);color:var(--accent-cyan);box-shadow:0 0 8px rgba(14,122,255,0.2);}
+  input[type="search"]{background:var(--bg-deep);border:1px solid var(--border);color:var(--text-prime);padding:8px 12px;border-radius:6px;font-family:var(--font-body);font-size:13px;outline:none;transition:border-color 0.15s;}
+  input[type="search"]:focus{border-color:var(--accent-blue);}
+  .filters-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px;}
+  .filters-row input[type="search"]{flex:1;min-width:160px;}
+  .table-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);}
+  table{width:100%;border-collapse:collapse;font-size:12px;}
+  thead{background:var(--bg-deep);}
+  th{padding:0;text-align:left;font-family:var(--font-mono);font-size:11px;color:var(--accent-blue);letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;}
+  th .th-inner{display:flex;align-items:center;gap:4px;padding:10px 12px;cursor:pointer;user-select:none;}
+  th .th-inner:hover{color:var(--accent-cyan);}
+  th .sort-arrow{font-size:10px;}
+  td{padding:8px 12px;color:var(--text-prime);border-bottom:1px solid rgba(30,48,69,0.5);white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis;}
+  tr:nth-child(even) td{background:rgba(22,30,40,0.5);}
+  tr:hover td{background:rgba(14,122,255,0.06);}
+  tr:last-child td{border-bottom:none;}
+  .pagination{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--text-mute);flex-wrap:wrap;}
+  .page-btn{padding:4px 10px;border-radius:4px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-mute);cursor:pointer;font-family:var(--font-mono);font-size:12px;transition:all 0.15s;}
+  .page-btn:hover,.page-btn.cur{border-color:var(--accent-blue);color:var(--accent-cyan);background:rgba(14,122,255,0.1);}
+  .empty-state{text-align:center;padding:48px 24px;color:var(--text-dim);}
+  .empty-icon{font-size:36px;margin-bottom:12px;}
+  .empty-state p{font-size:13px;}
+  .public-tag{display:inline-block;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--accent-green);font-family:var(--font-mono);font-size:10px;padding:2px 8px;border-radius:10px;letter-spacing:1px;margin-left:8px;}
+  #toast{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;flex-direction:column;gap:8px;}
+  .toast-msg{background:var(--bg-panel);border:1px solid var(--accent-blue);color:var(--text-prime);padding:10px 16px;border-radius:8px;font-size:12px;font-family:var(--font-mono);box-shadow:0 0 20px rgba(0,0,0,0.4);animation:slideup 0.2s ease;max-width:300px;}
+  @keyframes slideup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .loading{display:flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:13px;color:var(--text-mute);padding:32px;}
+  .spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent-cyan);border-radius:50%;animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
+
 <div class="topbar">
-  <div class="topbar-logo">&#11041; DATAFORGE <small>// VISTA PÚBLICA</small></div>
-  <div class="topbar-right">
-    <span class="topbar-clock" id="clock">--:--:--</span>
-    <div class="topbar-users"><div class="users-dot"></div><span id="usersCount">0</span>&nbsp;en línea</div>
-    <span class="public-badge">PÚBLICO</span>
+  <div class="topbar-logo">&#11041; DATAFORGE <span>// VISTA PÚBLICA</span></div>
+  <div class="topbar-status">
+    <div class="status-dot"></div>
+    <span>EN VIVO</span>
+    <span class="public-tag">PÚBLICO</span>
   </div>
 </div>
 
 <main class="main">
   <div class="page-header">
-    <h1>&#9673; Vista <span>Pública</span></h1>
-    <p>Filtros estilo Excel por columna · Búsqueda · Descarga · Revisiones en tiempo real</p>
+    <h1>&#9673; Vista <span>Pública</span> <span class="public-tag">PÚBLICO</span></h1>
+    <p>Datos en tiempo real · Solo lectura · Filtros disponibles</p>
   </div>
+
   <div class="panel-card">
     <div class="panel-title">&#10753; Categorías</div>
-    <div class="type-tabs" id="publicTypeTabs"><div class="loading"><div class="spinner"></div>Cargando...</div></div>
+    <div class="type-tabs" id="publicTypeTabs">
+      <div class="loading"><div class="spinner"></div>Cargando datos...</div>
+    </div>
   </div>
-  <div class="panel-card" id="tablePanel" style="display:none;">
-    <div class="panel-title">&#10792; <span id="tableTitle" style="color:var(--text-prime);font-family:var(--font-head);"></span></div>
-    <div class="toolbar">
-      <div class="search-box">
-        <span class="search-icon">&#128269;</span>
-        <input type="text" id="globalSearch" placeholder="Buscar en todos los campos..." oninput="applyFilters()">
-      </div>
-      <button class="btn btn-amber" onclick="clearAllFilters()">&#10006; Limpiar filtros</button>
-      <button class="btn btn-success" onclick="downloadFiltered()">&#11015; Descargar Excel</button>
+
+  <div class="panel-card" id="publicTablePanel" style="display:none;">
+    <div class="panel-title">&#10792; Datos — <span id="publicTableTitle" style="color:var(--text-prime)"></span></div>
+    <div class="filters-row">
+      <input type="search" id="publicSearch" placeholder="Buscar en todos los campos..." oninput="renderTable()">
+      <button class="btn btn-success" onclick="downloadFiltered()">&#11015; Descargar Excel filtrado</button>
     </div>
-    <div class="active-filters" id="activeFilters"></div>
-    <div class="results-info" id="resultsInfo"></div>
-    <div class="table-wrap" id="tableWrap">
-      <table><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+    <div class="table-wrap">
+      <table><thead id="publicThead"></thead><tbody id="publicTbody"></tbody></table>
     </div>
-    <div class="pagination" id="pagination"></div>
+    <div class="pagination" id="publicPagination"></div>
   </div>
 </main>
 
-<!-- MODAL REVISAR -->
-<div class="modal-overlay" id="modalCheck" style="display:none;">
-  <div class="modal-box">
-    <div class="modal-title" style="color:var(--accent-green);">&#10003; MARCAR REVISADO</div>
-    <div class="modal-sub" id="checkInfo"></div>
-    <div class="modal-body">¿Confirmas que esta fila ha sido revisada?</div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('modalCheck')">Cancelar</button>
-      <button class="btn-go-green" onclick="confirmCheck()">&#10003; Confirmar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL COMENTAR -->
-<div class="modal-overlay" id="modalCmt" style="display:none;">
-  <div class="modal-box">
-    <div class="modal-title" style="color:var(--accent-cyan);">&#9998; COMENTARIO</div>
-    <div class="modal-sub" id="cmtInfo"></div>
-    <span class="modal-label">Tu comentario</span>
-    <textarea id="cmtText" placeholder="Escribe tu comentario..."></textarea>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('modalCmt')">Cancelar</button>
-      <button class="btn-go-blue" onclick="confirmCmt()">&#10003; Guardar</button>
-    </div>
-  </div>
-</div>
-
 <div id="toast"></div>
 
+<!-- FIREBASE SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot, query, orderBy, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBrTT-bK_UTZLSg6BVMiVviIQmAYFbGo9Q",
@@ -210,306 +121,119 @@ const firebaseConfig = {
   messagingSenderId: "687282166437",
   appId: "1:687282166437:web:83772a6d56c52185784b4c"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// CLOCK
-function updateClock(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
-setInterval(updateClock,1000);updateClock();
+var ROWS_PER_PAGE = 50;
+var state = { excelFiles:[], currentType:null, page:1, sort:{col:-1,dir:1} };
 
-// PRESENCE
-var presenceId='pub_'+Math.random().toString(36).slice(2);
-async function regPresence(){try{await setDoc(doc(db,'presence',presenceId),{type:'public',ts:Date.now()});}catch(e){}}
-async function rmPresence(){try{await deleteDoc(doc(db,'presence',presenceId));}catch(e){}}
-regPresence();setInterval(regPresence,30000);window.addEventListener('beforeunload',rmPresence);
-onSnapshot(collection(db,'presence'),function(snap){
-  var cut=Date.now()-90000,c=0;snap.forEach(function(d){if((d.data().ts||0)>cut)c++;});
-  document.getElementById('usersCount').textContent=c;
-});
-
-var ROWS_PER_PAGE=100;
-var state={excelFiles:[],reviews:{},currentType:null,page:1,sort:{col:-1,dir:1},colFilters:{},rows:[],headers:[]};
-var pendingKey=null;
-// activeDropdown: {col, header, pendingValues Set}
-var activeDropdown=null;
-
-onSnapshot(query(collection(db,'excelFiles'),orderBy('date','desc')),function(snap){
-  state.excelFiles=[];snap.forEach(function(d){state.excelFiles.push(d.data());});renderTypes();
-});
-onSnapshot(collection(db,'reviews'),function(snap){
-  state.reviews={};snap.forEach(function(d){state.reviews[d.id]=d.data();});
-  if(state.currentType)renderTable();
+// ---- LISTEN REALTIME ----
+const q = query(collection(db,'excelFiles'), orderBy('date','desc'));
+onSnapshot(q, function(snapshot){
+  state.excelFiles = [];
+  snapshot.forEach(function(d){ state.excelFiles.push(d.data()); });
+  renderTypes();
 });
 
 function renderTypes(){
-  var tabs=document.getElementById('publicTypeTabs');
-  var types=[];
-  state.excelFiles.forEach(function(f){if(types.indexOf(f.type)<0)types.push(f.type);});
-  if(!types.length){tabs.innerHTML='<div class="empty-state">No hay datos disponibles aún.</div>';document.getElementById('tablePanel').style.display='none';return;}
-  tabs.innerHTML=types.map(function(t){return'<div class="type-tab'+(state.currentType===t?' active':'')+'" onclick="selectType(\''+escJs(t)+'\')">'+escHtml(t)+'</div>';}).join('');
-  if(!state.currentType||types.indexOf(state.currentType)<0)selectType(types[0]);
-  else renderTable();
-  document.getElementById('tablePanel').style.display='block';
-}
+  var tabs = document.getElementById('publicTypeTabs');
+  var types = [];
+  state.excelFiles.forEach(function(f){ if(types.indexOf(f.type)<0) types.push(f.type); });
 
-window.selectType=function(type){
-  state.currentType=type;state.page=1;state.sort={col:-1,dir:1};state.colFilters={};
-  document.getElementById('globalSearch').value='';
-  document.getElementById('tableTitle').textContent=type;
-  document.querySelectorAll('.type-tab').forEach(function(t){t.classList.toggle('active',t.textContent===type);});
-  buildData();renderTable();
-};
-
-function buildData(){
-  var files=state.excelFiles.filter(function(f){return f.type===state.currentType;});
-  state.headers=[];state.rows=[];
-  files.forEach(function(f){if(!state.headers.length)state.headers=f.headers||[];(f.rows||[]).forEach(function(r){state.rows.push(r);});});
-}
-
-function getFilteredRows(){
-  var rows=state.rows.slice();
-  var srch=document.getElementById('globalSearch').value.toLowerCase();
-  if(srch)rows=rows.filter(function(r){return state.headers.some(function(h){return String(r[h]||'').toLowerCase().indexOf(srch)>=0;});});
-  // Excel-style checkbox filters
-  Object.keys(state.colFilters).forEach(function(h){
-    var allowed=state.colFilters[h];
-    if(allowed&&allowed.size>0)rows=rows.filter(function(r){return allowed.has(String(r[h]!=null?r[h]:''));});
-  });
-  if(state.sort.col>=0){
-    var sh=state.headers[state.sort.col],sd=state.sort.dir;
-    rows.sort(function(a,b){var va=a[sh]!=null?a[sh]:'',vb=b[sh]!=null?b[sh]:'';if(typeof va==='number'&&typeof vb==='number')return(va-vb)*sd;return String(va).localeCompare(String(vb))*sd;});
+  if(!types.length){
+    tabs.innerHTML='<div class="empty-state"><div class="empty-icon">&#9673;</div><p>No hay datos disponibles aún.</p></div>';
+    document.getElementById('publicTablePanel').style.display='none';
+    return;
   }
-  return rows;
-}
 
-// Get unique values for a column from ALL rows (not filtered)
-function getColValues(h){
-  var vals={};
-  state.rows.forEach(function(r){var v=String(r[h]!=null?r[h]:'');vals[v]=true;});
-  return Object.keys(vals).sort(function(a,b){return a.localeCompare(b,undefined,{numeric:true});});
-}
-
-window.applyFilters=function(){state.page=1;renderTable();};
-
-window.clearAllFilters=function(){
-  state.colFilters={};state.sort={col:-1,dir:1};
-  document.getElementById('globalSearch').value='';
-  closeDropdown();state.page=1;renderTable();
-};
-
-window.clearColFilter=function(h){
-  delete state.colFilters[h];state.page=1;renderTable();
-};
-
-function renderActiveFilters(){
-  var el=document.getElementById('activeFilters');
-  var chips=[];
-  Object.keys(state.colFilters).forEach(function(h){
-    var f=state.colFilters[h];
-    if(f&&f.size>0){
-      var label=h+': '+(f.size===1?[...f][0]:f.size+' valores');
-      chips.push('<div class="filter-chip"><span>'+escHtml(label)+'</span><button onclick="clearColFilter(\''+escJs(h)+'\')">✕</button></div>');
-    }
-  });
-  el.innerHTML=chips.join('');
-}
-
-function renderTable(){
-  if(!state.currentType)return;
-  buildData();
-  var filtered=getFilteredRows();
-  var pages=Math.ceil(filtered.length/ROWS_PER_PAGE)||1;
-  if(state.page>pages)state.page=1;
-  var pageRows=filtered.slice((state.page-1)*ROWS_PER_PAGE,state.page*ROWS_PER_PAGE);
-  document.getElementById('resultsInfo').textContent=filtered.length+' de '+state.rows.length+' filas';
-  renderActiveFilters();
-
-  // THEAD — Excel filter button per column
-  document.getElementById('thead').innerHTML='<tr>'+
-    '<th style="min-width:160px;"><div class="th-btn" style="cursor:default;">ESTADO</div></th>'+
-    state.headers.map(function(h,i){
-      var isFiltered=state.colFilters[h]&&state.colFilters[h].size>0;
-      var arr=state.sort.col===i?(state.sort.dir===1?'▲':'▼'):'';
-      return'<th data-col="'+i+'" data-header="'+escHtml(h)+'">'+
-        '<div class="th-btn'+(isFiltered?' filtered':'')+'" onclick="toggleDropdown(event,'+i+',\''+escJs(h)+'\')">'+
-          escHtml(h)+
-          (arr?'<span class="sort-arrow">'+arr+'</span>':'')+ 
-          '<span class="filter-icon">'+(isFiltered?'&#9660;':'&#9660;')+'</span>'+
-        '</div>'+
-      '</th>';
-    }).join('')+'</tr>';
-
-  // TBODY
-  document.getElementById('tbody').innerHTML=pageRows.length?pageRows.map(function(r){
-    var rk=makeRowKey(state.currentType,r,state.headers);
-    var rev=state.reviews[rk];var done=rev&&rev.done;var hasCom=rev&&rev.comment&&rev.comment.trim();
-    var fv=escJs(String(r[state.headers[0]]||''));
-    return'<tr class="'+(done?'row-done':'')+'">'+
-      '<td class="sc">'+
-        '<div class="status-btns">'+
-          '<button class="btn-check'+(done?' done':'')+'" '+(done?'disabled':'onclick="openCheck(\''+rk+'\',\''+fv+'\')"')+'>'+
-            (done?'✓ OK':'○ Revisar')+
-          '</button>'+
-          '<button class="btn-cmt'+(hasCom?' has':'')+'" onclick="openCmt(\''+rk+'\',\''+fv+'\')">'+(hasCom?'💬':'✏')+'</button>'+
-        '</div>'+
-        (hasCom?'<div class="cmt-preview">'+escHtml(rev.comment)+'</div>':'')+
-      '</td>'+
-      state.headers.map(function(h){return'<td title="'+escHtml(String(r[h]!=null?r[h]:''))+'">'+escHtml(String(r[h]!=null?r[h]:''))+'</td>';}).join('')+
-    '</tr>';
-  }).join(''):'<tr><td colspan="'+(state.headers.length+1)+'" class="empty-state">Sin resultados</td></tr>';
-
-  renderPagination(pages,filtered.length);
-}
-
-// =====================
-// EXCEL-STYLE DROPDOWN
-// =====================
-window.toggleDropdown=function(e,colIdx,header){
-  e.stopPropagation();
-  // If same col open, close
-  if(activeDropdown&&activeDropdown.col===colIdx){closeDropdown();return;}
-  closeDropdown();
-
-  var th=e.currentTarget.closest('th');
-  var allVals=getColValues(header);
-  var currentFilter=state.colFilters[header]||null;
-  // pending = copy of current selection (or all selected)
-  var pending=currentFilter?new Set(currentFilter):new Set(allVals);
-
-  var dd=document.createElement('div');
-  dd.className='filter-dropdown';
-  dd.id='activeDD';
-
-  var searchId='fdSearch_'+colIdx;
-  dd.innerHTML=
-    '<div class="fd-header">'+
-      '<input class="fd-search" id="'+searchId+'" placeholder="Buscar valor..." oninput="fdSearch(this,\''+escJs(header)+'\')">'+
-      '<label class="fd-select-all" onclick="fdToggleAll(\''+escJs(header)+'\')">'+
-        '<input type="checkbox" id="fdAllChk" '+(pending.size===allVals.length?'checked':'')+'>'+
-        '<span>(Seleccionar todo)</span>'+
-      '</label>'+
-    '</div>'+
-    '<div class="fd-list" id="fdList_'+colIdx+'">'+
-      renderFdItems(allVals,pending,colIdx)+
-    '</div>'+
-    '<div class="fd-footer">'+
-      '<button class="fd-btn fd-btn-ok" onclick="fdApply(\''+escJs(header)+'\')">ACEPTAR</button>'+
-      '<button class="fd-btn fd-btn-cancel" onclick="closeDropdown()">Cancelar</button>'+
-    '</div>';
-
-  th.style.position='relative';
-  th.appendChild(dd);
-  activeDropdown={col:colIdx,header:header,pending:pending,allVals:allVals};
-  document.getElementById(searchId).focus();
-};
-
-function renderFdItems(vals,pending,colIdx){
-  return vals.map(function(v){
-    return'<label class="fd-item">'+
-      '<input type="checkbox" '+(pending.has(v)?'checked':'')+' onchange="fdToggle(this,\''+escJs(v)+'\')">'+
-      '<span title="'+escHtml(v)+'">'+escHtml(v||'(vacío)')+'</span>'+
-    '</label>';
+  tabs.innerHTML = types.map(function(t){
+    return '<div class="type-tab'+(state.currentType===t?' active':'')+'" onclick="selectType(\''+escJs(t)+'\')">'+t+'</div>';
   }).join('');
+
+  if(!state.currentType || types.indexOf(state.currentType)<0) selectType(types[0]);
+  else renderTable();
+  document.getElementById('publicTablePanel').style.display='block';
 }
 
-window.fdSearch=function(input,header){
-  if(!activeDropdown)return;
-  var q=input.value.toLowerCase();
-  var filtered=activeDropdown.allVals.filter(function(v){return v.toLowerCase().indexOf(q)>=0;});
-  var el=document.getElementById('fdList_'+activeDropdown.col);
-  if(el)el.innerHTML=renderFdItems(filtered,activeDropdown.pending,activeDropdown.col);
+window.selectType = function(type){
+  state.currentType = type;
+  state.page = 1;
+  state.sort = {col:-1,dir:1};
+  document.getElementById('publicSearch').value = '';
+  document.getElementById('publicTableTitle').textContent = type;
+  document.querySelectorAll('.type-tab').forEach(function(t){
+    t.classList.toggle('active', t.textContent===type);
+  });
+  renderTable();
 };
 
-window.fdToggle=function(checkbox,val){
-  if(!activeDropdown)return;
-  if(checkbox.checked)activeDropdown.pending.add(val);
-  else activeDropdown.pending.delete(val);
-  var allChk=document.getElementById('fdAllChk');
-  if(allChk)allChk.checked=activeDropdown.pending.size===activeDropdown.allVals.length;
+window.renderTable = function(){
+  var type = state.currentType; if(!type) return;
+  var files = state.excelFiles.filter(function(f){return f.type===type;});
+  var rows=[]; var headers=[];
+  files.forEach(function(f){
+    if(!headers.length) headers=f.headers||[];
+    (f.rows||[]).forEach(function(r){rows.push(r);});
+  });
+  var srch=document.getElementById('publicSearch').value.toLowerCase();
+  if(srch) rows=rows.filter(function(r){return headers.some(function(h){return String(r[h]||'').toLowerCase().indexOf(srch)>=0;});});
+  if(state.sort.col>=0){
+    var sh=headers[state.sort.col],sd=state.sort.dir;
+    rows=rows.slice().sort(function(a,b){var va=a[sh]!=null?a[sh]:'',vb=b[sh]!=null?b[sh]:'';if(typeof va==='number'&&typeof vb==='number')return(va-vb)*sd;return String(va).localeCompare(String(vb))*sd;});
+  }
+  var pages=Math.ceil(rows.length/ROWS_PER_PAGE)||1;
+  if(state.page>pages) state.page=1;
+  var pageRows=rows.slice((state.page-1)*ROWS_PER_PAGE,state.page*ROWS_PER_PAGE);
+  document.getElementById('publicThead').innerHTML='<tr>'+headers.map(function(h,i){
+    var arr=state.sort.col===i?(state.sort.dir===1?'▲':'▼'):'';
+    return'<th><div class="th-inner" onclick="sortTable('+i+')">'+h+' <span class="sort-arrow">'+arr+'</span></div></th>';
+  }).join('')+'</tr>';
+  document.getElementById('publicTbody').innerHTML=pageRows.length?pageRows.map(function(r){return'<tr>'+headers.map(function(h){return'<td title="'+String(r[h]!=null?r[h]:'')+'">'+String(r[h]!=null?r[h]:'')+'</td>';}).join('')+'</tr>';}).join(''):'<tr><td colspan="'+headers.length+'" style="text-align:center;padding:32px;color:var(--text-dim);">Sin resultados</td></tr>';
+  renderPagination(pages,rows.length);
 };
 
-window.fdToggleAll=function(header){
-  if(!activeDropdown)return;
-  var allChk=document.getElementById('fdAllChk');
-  if(!allChk)return;
-  // toggle
-  var willCheck=!allChk.checked;
-  allChk.checked=willCheck;
-  if(willCheck){activeDropdown.allVals.forEach(function(v){activeDropdown.pending.add(v);});}
-  else{activeDropdown.pending.clear();}
-  // re-render list
-  var el=document.getElementById('fdList_'+activeDropdown.col);
-  if(el)el.innerHTML=renderFdItems(activeDropdown.allVals,activeDropdown.pending,activeDropdown.col);
-};
-
-window.fdApply=function(header){
-  if(!activeDropdown)return;
-  var p=activeDropdown.pending;
-  var all=activeDropdown.allVals;
-  // If all selected = no filter
-  if(p.size===0||p.size===all.length)delete state.colFilters[header];
-  else state.colFilters[header]=new Set(p);
-  // Apply sort if clicked header
-  closeDropdown();state.page=1;renderTable();
-};
-
-function closeDropdown(){
-  var dd=document.getElementById('activeDD');
-  if(dd)dd.remove();
-  activeDropdown=null;
-}
-// Close on outside click
-document.addEventListener('click',function(e){
-  if(activeDropdown&&!e.target.closest('#activeDD')&&!e.target.closest('.th-btn'))closeDropdown();
-});
-
-// Sort on header click (separate from filter icon) — handled in toggle, detect sort vs filter
-// Sort by clicking column name area (not the dropdown arrow)
-window.sortCol=function(i){
+window.sortTable=function(i){
   if(state.sort.col===i)state.sort.dir*=-1;else{state.sort.col=i;state.sort.dir=1;}
-  state.page=1;renderTable();
+  renderTable();
 };
 
 function renderPagination(pages,total){
-  var el=document.getElementById('pagination'),cur=state.page;
-  var html='<span style="color:var(--text-mute);">'+total+' filas</span><div class="page-btns">';
-  html+='<button class="page-btn" onclick="goPage('+(cur-1)+')"'+(cur<=1?' disabled':'')+'>‹</button>';
-  for(var i=1;i<=pages;i++){if(pages>8&&i>2&&i<pages-1&&Math.abs(i-cur)>1){if(i===3||i===pages-2)html+='<span style="color:var(--text-dim);padding:0 3px;">…</span>';continue;}html+='<button class="page-btn'+(i===cur?' cur':'')+'" onclick="goPage('+i+')">'+i+'</button>';}
-  html+='<button class="page-btn" onclick="goPage('+(cur+1)+')"'+(cur>=pages?' disabled':'')+'>›</button></div>';
+  var el=document.getElementById('publicPagination');
+  var cur=state.page;
+  if(pages<=1){el.innerHTML='<span>'+total+' filas</span>';return;}
+  var html='<span>'+total+' filas</span> ';
+  html+='<button class="page-btn" onclick="changePage('+(cur-1)+')"'+(cur<=1?' disabled':'')+'>‹</button>';
+  for(var i=1;i<=pages;i++){
+    if(pages>8&&i>2&&i<pages-1&&Math.abs(i-cur)>1){if(i===3||i===pages-2)html+='<span>…</span>';continue;}
+    html+='<button class="page-btn'+(i===cur?' cur':'')+'" onclick="changePage('+i+')">'+i+'</button>';
+  }
+  html+='<button class="page-btn" onclick="changePage('+(cur+1)+')"'+(cur>=pages?' disabled':'')+'>›</button>';
   el.innerHTML=html;
 }
-window.goPage=function(n){state.page=n;renderTable();};
+window.changePage=function(n){state.page=n;renderTable();};
 
-// MODALS
-window.openCheck=function(rk,info){pendingKey=rk;document.getElementById('checkInfo').textContent='Fila: '+info;document.getElementById('modalCheck').style.display='flex';};
-window.openCmt=function(rk,info){pendingKey=rk;var rev=state.reviews[rk];document.getElementById('cmtInfo').textContent='Fila: '+info;document.getElementById('cmtText').value=(rev&&rev.comment)?rev.comment:'';document.getElementById('modalCmt').style.display='flex';setTimeout(function(){document.getElementById('cmtText').focus();},100);};
-window.closeModal=function(id){document.getElementById(id).style.display='none';pendingKey=null;};
-window.confirmCheck=async function(){
-  if(!pendingKey)return;var rk=pendingKey,ex=state.reviews[rk]||{};
-  try{await setDoc(doc(db,'reviews',rk),Object.assign({},ex,{done:true,doneDate:new Date().toISOString(),type:state.currentType,doneBy:'público'}));toast('✓ Marcado como revisado','var(--accent-green)');closeModal('modalCheck');}
-  catch(e){toast('Error: '+e.message,'var(--accent-red)');}
-};
-window.confirmCmt=async function(){
-  if(!pendingKey)return;var rk=pendingKey,comment=document.getElementById('cmtText').value.trim(),ex=state.reviews[rk]||{};
-  try{await setDoc(doc(db,'reviews',rk),Object.assign({},ex,{comment:comment,commentDate:new Date().toISOString(),type:state.currentType}));toast(comment?'💬 Comentario guardado':'Comentario eliminado','var(--accent-amber)');closeModal('modalCmt');}
-  catch(e){toast('Error: '+e.message,'var(--accent-red)');}
-};
-['modalCheck','modalCmt'].forEach(function(id){document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeModal(id);});});
-
-// DOWNLOAD
 window.downloadFiltered=function(){
-  if(!state.currentType)return;
-  var rows=getFilteredRows();
-  var wsData=[['REVISADO','COMENTARIO'].concat(state.headers)].concat(rows.map(function(r){var rk=makeRowKey(state.currentType,r,state.headers);var rev=state.reviews[rk];return[(rev&&rev.done?'Sí':'No'),(rev&&rev.comment?rev.comment:'')].concat(state.headers.map(function(h){return r[h]!=null?r[h]:'';  }));}));
-  var ws=XLSX.utils.aoa_to_sheet(wsData);var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,state.currentType.slice(0,31));
-  XLSX.writeFile(wb,state.currentType.replace(/\s+/g,'_')+'_datos.xlsx');
-  toast('Descargando Excel filtrado...','var(--accent-green)');
+  var type=state.currentType; if(!type) return;
+  var files=state.excelFiles.filter(function(f){return f.type===type;});
+  var rows=[]; var headers=[];
+  files.forEach(function(f){if(!headers.length)headers=f.headers||[];(f.rows||[]).forEach(function(r){rows.push(r);});});
+  var srch=document.getElementById('publicSearch').value.toLowerCase();
+  if(srch)rows=rows.filter(function(r){return headers.some(function(h){return String(r[h]||'').toLowerCase().indexOf(srch)>=0;});});
+  var wsData=[headers].concat(rows.map(function(r){return headers.map(function(h){return r[h]!=null?r[h]:'';});}));
+  var ws=XLSX.utils.aoa_to_sheet(wsData);
+  var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,type.slice(0,31));
+  XLSX.writeFile(wb,type.replace(/\s+/g,'_')+'_datos.xlsx');
+  toast('Descargando...','var(--accent-green)');
 };
 
-function makeRowKey(type,row,headers){var key=(type+'__'+headers.slice(0,3).map(function(h){return String(row[h]!=null?row[h]:'');}).join('_')).replace(/[^a-zA-Z0-9_\-]/g,'').slice(0,100);return key||('row_'+Math.random().toString(36).slice(2));}
-function escJs(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'\\"').replace(/\n/g,' ');}
-function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-window.toast=function(msg,color){var d=document.createElement('div');d.className='toast-msg';d.style.borderColor=color||'var(--accent-blue)';d.textContent=msg;document.getElementById('toast').appendChild(d);setTimeout(function(){d.remove();},4000);};
+function escJs(s){return String(s).replace(/'/g,"\\'")}
+window.toast=function(msg,color){
+  var d=document.createElement('div');d.className='toast-msg';
+  d.style.borderColor=color||'var(--accent-blue)';d.textContent=msg;
+  document.getElementById('toast').appendChild(d);
+  setTimeout(function(){d.remove();},4000);
+};
 </script>
 </body>
 </html>
