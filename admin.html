@@ -447,10 +447,36 @@ function updateSelects(){
 
 function renderConfigLists(){
   var dl=document.getElementById('distritosLista');
-  if(dl)dl.innerHTML=state.distritos.map(function(d){return'<div class="config-item"><span>'+escHtml(d)+'</span><button class="btn btn-danger" onclick="removeDistrito(''+escJs(d)+'')">✕</button></div>';}).join('')||'<div class="empty-state" style="padding:10px;">Sin distritos</div>';
+  if(dl){
+    if(!state.distritos.length){dl.innerHTML='<div class="empty-state" style="padding:10px;">Sin distritos</div>';}
+    else{
+      dl.innerHTML='';
+      state.distritos.forEach(function(d){
+        var item=document.createElement('div');item.className='config-item';
+        item.innerHTML='<span>'+escHtml(d)+'</span>';
+        var btn=document.createElement('button');btn.className='btn btn-danger';btn.textContent='✕';
+        btn.onclick=function(){window.removeDistrito(d);};
+        item.appendChild(btn);dl.appendChild(item);
+      });
+    }
+  }
   var cl=document.getElementById('categoriasLista');
-  if(cl)cl.innerHTML=state.categorias.map(function(c){return'<div class="config-item"><span>'+escHtml(c)+'</span><button class="btn btn-danger" onclick="removeCategoria(''+escJs(c)+'')">✕</button></div>';}).join('')||'<div class="empty-state" style="padding:10px;">Sin categorías</div>';
+  if(cl){
+    if(!state.categorias.length){cl.innerHTML='<div class="empty-state" style="padding:10px;">Sin categorías</div>';}
+    else{
+      cl.innerHTML='';
+      state.categorias.forEach(function(c){
+        var item=document.createElement('div');item.className='config-item';
+        item.innerHTML='<span>'+escHtml(c)+'</span>';
+        var btn=document.createElement('button');btn.className='btn btn-danger';btn.textContent='✕';
+        btn.onclick=function(){window.removeCategoria(c);};
+        item.appendChild(btn);cl.appendChild(item);
+      });
+    }
+  }
 }
+
+
 
 window.addDistrito=function(){
   var v=document.getElementById('newDistrito').value.trim();
