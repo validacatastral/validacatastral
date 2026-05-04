@@ -496,9 +496,13 @@ onSnapshot(collection(db,'usuarios'),function(snap){
 window.doLogin=function(){
   var u=document.getElementById('loginUser').value.trim().toLowerCase();
   var p=document.getElementById('loginPass').value;
+  // Intentar login inmediato con usuarios hardcodeados
+  var quickUser=USERS[u];
+  if(quickUser&&quickUser.pass===p){tryLogin(u,p);return;}
+  // Si no, esperar Firebase
   if(!dbUsersLoaded){
     window._pendingLogin=function(){tryLogin(u,p);};
-    showLoginErr('Cargando usuarios...');
+    showLoginErr('Verificando credenciales...');
     setTimeout(function(){if(window._pendingLogin){window._pendingLogin();window._pendingLogin=null;}},3000);
     return;
   }
