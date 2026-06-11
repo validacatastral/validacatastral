@@ -1,0 +1,70 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Funciones de ayuda
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    // Personal autorizado: existe su ficha en la coleccion "usuarios"
+    function isStaff() {
+      return isSignedIn() && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid));
+    }
+    // Administrador
+    function isAdmin() {
+      return isSignedIn() && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Configuracion (distritos y categorias): publica para leer, solo admin escribe
+    match /config/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Archivos Excel publicados: cualquiera puede verlos, solo personal los sube/borra
+    match /excelFiles/{fileId} {
+      allow read: if true;
+      allow write: if isStaff();
+      match /chunks/{chunkId} {
+        allow read: if true;
+        allow write: if isStaff();
+      }
+    }
+
+    // Archivos HTML internos: solo personal
+    match /htmlFiles/{fileId} {
+      allow read, write: if isStaff();
+    }
+
+    // Revisiones y comentarios: el publico (sesion anonima) puede marcar y comentar
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Presencia (contador "en linea")
+    match /presence/{presenceId} {
+      allow read: if true;
+      allow write: if isSignedIn();
+    }
+
+    // Usuarios del panel: cada quien puede leer su propia ficha (para el login),
+    // el personal puede listar, y solo el admin crea/borra
+    match /usuarios/{uid} {
+      allow get: if isSignedIn() && (request.auth.uid == uid || isStaff());
+      allow list: if isStaff();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Historial de actividad: solo admins lo leen, el personal lo escribe
+    match /historial/{histId} {
+      allow read: if isAdmin();
+      allow create: if isStaff();
+    }
+
+    // Todo lo demas: bloqueado
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
