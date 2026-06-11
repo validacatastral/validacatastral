@@ -152,21 +152,23 @@ textarea:focus{border-color:var(--blue);}
 <div id="toast"></div>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import{getFirestore,collection,onSnapshot,query,orderBy,doc,setDoc,deleteDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{getFirestore,collection,onSnapshot,query,orderBy,doc,setDoc,deleteDoc,getDocs}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{getAuth,signInAnonymously}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 const cfg={apiKey:"AIzaSyBrTT-bK_UTZLSg6BVMiVviIQmAYFbGo9Q",authDomain:"dataforge-mio.firebaseapp.com",projectId:"dataforge-mio",storageBucket:"dataforge-mio.firebasestorage.app",messagingSenderId:"687282166437",appId:"1:687282166437:web:83772a6d56c52185784b4c"};
 const app=initializeApp(cfg);const db=getFirestore(app);
+const auth=getAuth(app);
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
 setInterval(tick,1000);tick();
 var pid='pub_'+Math.random().toString(36).slice(2);
 async function rP(){try{await setDoc(doc(db,'presence',pid),{type:'public',ts:Date.now()});}catch(e){}}
 async function rmP(){try{await deleteDoc(doc(db,'presence',pid));}catch(e){}}
-rP();setInterval(rP,180000);window.addEventListener('beforeunload',rmP);
+signInAnonymously(auth).then(rP).catch(function(e){console.warn('auth',e);});setInterval(rP,180000);window.addEventListener('beforeunload',rmP);
 onSnapshot(collection(db,'presence'),function(sn){var cut=Date.now()-270000,c=0;sn.forEach(function(d){if((d.data().ts||0)>cut)c++;});document.getElementById('uc').textContent=c;});
 var RPP=100;
 var S={files:[],reviews:{},distritos:[],categorias:[],curDist:null,curType:null,page:1,sort:{col:-1,dir:1},cf:{},rows:[],headers:[]};
 var pendKey=null,activeDD=null;
 onSnapshot(doc(db,'config','settings'),function(sn){if(sn.exists()){var d=sn.data();S.distritos=d.distritos||[];S.categorias=d.categorias||[];}renderDistTabs();});
-onSnapshot(query(collection(db,'excelFiles'),orderBy('date','desc')),function(sn){S.files=[];sn.forEach(function(d){S.files.push(d.data());});renderDistTabs();});
+onSnapshot(query(collection(db,'excelFiles'),orderBy('date','desc')),function(sn){S.files=[];sn.forEach(function(d){S.files.push(Object.assign({},d.data(),{fireId:d.id}));});renderDistTabs();if(S.curType)ensureCurRows();});
 onSnapshot(collection(db,'reviews'),function(sn){S.reviews={};sn.forEach(function(d){S.reviews[d.id]=d.data();});if(S.curType)renderTable();});
 
 function getDistsCon(){var ds={};S.files.forEach(function(f){if(f.distrito)ds[f.distrito]=true;});return Object.keys(ds);}
@@ -213,19 +215,32 @@ function renderCatTabs(){
   if(!S.curType||catList.indexOf(S.curType)<0)selCat(catList[0]);
 }
 
-window.selCat=function(type){
+async function loadRowsFor(f){
+  if(f.rows)return f.rows;
+  if(f._rows)return f._rows;
+  var sn2=await getDocs(query(collection(db,'excelFiles',f.fireId,'chunks'),orderBy('i')));
+  var rows=[];sn2.forEach(function(d2){(d2.data().rows||[]).forEach(function(r){rows.push(r);});});
+  f._rows=rows;return rows;
+}
+async function ensureCurRows(){
+  var fs=S.files.filter(function(f){return f.distrito===S.curDist&&f.type===S.curType;});
+  for(var i=0;i<fs.length;i++){try{await loadRowsFor(fs[i]);}catch(e){}}
+  renderTable();
+}
+window.selCat=async function(type){
   S.curType=type;S.page=1;S.sort={col:-1,dir:1};S.cf={};
   var gs=document.getElementById('gsearch');if(gs)gs.value='';
   document.getElementById('tableTitle').textContent=S.curDist+' - '+type;
   document.querySelectorAll('#catTabs .tab').forEach(function(t){t.classList.toggle('active',t.textContent===type);});
   document.getElementById('tablePanel').style.display='block';
-  buildData();renderTable();
+  document.getElementById('tbody').innerHTML='<tr><td colspan="99"><div class="ld"><div class="sp"></div>Cargando datos...</div></td></tr>';
+  await ensureCurRows();
 };
 
 function buildData(){
   var fs=S.files.filter(function(f){return f.distrito===S.curDist&&f.type===S.curType;});
   S.headers=[];S.rows=[];
-  fs.forEach(function(f){if(!S.headers.length)S.headers=f.headers||[];(f.rows||[]).forEach(function(r){S.rows.push(r);});});
+  fs.forEach(function(f){if(!S.headers.length)S.headers=f.headers||[];(f._rows||f.rows||[]).forEach(function(r){S.rows.push(r);});});
 }
 
 function getFiltered(){
