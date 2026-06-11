@@ -1,27 +1,24 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Funciones de ayuda
+    // ---------- Helpers ----------
     function isSignedIn() {
       return request.auth != null;
     }
-    // Personal autorizado: existe su ficha en la coleccion "usuarios"
     function isStaff() {
-      return isSignedIn() && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid));
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid));
     }
-    // Administrador
     function isAdmin() {
-      return isSignedIn() && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.role == 'admin';
+      return isSignedIn()
+        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.role == 'admin';
     }
-
-    // Configuracion (distritos y categorias): publica para leer, solo admin escribe
+    // ---------- config ----------
     match /config/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }
-
-    // Archivos Excel publicados: cualquiera puede verlos, solo personal los sube/borra
+    // ---------- excelFiles + chunks ----------
     match /excelFiles/{fileId} {
       allow read: if true;
       allow write: if isStaff();
@@ -30,39 +27,65 @@ service cloud.firestore {
         allow write: if isStaff();
       }
     }
-
-    // Archivos HTML internos: solo personal
-    match /htmlFiles/{fileId} {
-      allow read, write: if isStaff();
-    }
-
-    // Revisiones y comentarios: el publico (sesion anonima) puede marcar y comentar
-    match /reviews/{reviewId} {
+    // ---------- reviews (ENDURECIDO) ----------
+    // Cualquier sesion (incluida anonima) puede escribir, pero SOLO
+    // documentos con la forma exacta esperada y tamanos acotados.
+    match /reviews/{reviewKey} {
       allow read: if true;
-      allow write: if isSignedIn();
+      allow create, update: if isSignedIn()
+        // Solo los campos que usa la app, ninguno extra:
+        && request.resource.data.keys().hasOnly(
+             ['done', 'doneDate', 'doneBy', 'comment', 'commentDate', 'tipo', 'type', 'distrito'])
+        // Tipos y limites (cada campo es opcional, pero si viene debe ser valido):
+        && (!('done' in request.resource.data)
+             || request.resource.data.done is bool)
+        && (!('comment' in request.resource.data)
+             || (request.resource.data.comment is string
+                 && request.resource.data.comment.size() <= 1000))
+        && (!('doneBy' in request.resource.data)
+             || (request.resource.data.doneBy is string
+                 && request.resource.data.doneBy.size() <= 100))
+        && (!('distrito' in request.resource.data)
+             || (request.resource.data.distrito is string
+                 && request.resource.data.distrito.size() <= 100))
+        && (!('tipo' in request.resource.data)
+             || (request.resource.data.tipo is string
+                 && request.resource.data.tipo.size() <= 100))
+        && (!('type' in request.resource.data)
+             || (request.resource.data.type is string
+                 && request.resource.data.type.size() <= 100));
+      // Borrar una review solo lo puede hacer el staff:
+      allow delete: if isStaff();
     }
-
-    // Presencia (contador "en linea")
+    // ---------- presence (ENDURECIDO) ----------
     match /presence/{presenceId} {
       allow read: if true;
-      allow write: if isSignedIn();
+      allow create, update: if isSignedIn()
+        && request.resource.data.keys().hasOnly(['type', 'user', 'ts'])
+        && request.resource.data.type is string
+        && request.resource.data.type.size() <= 30
+        && (!('user' in request.resource.data)
+             || (request.resource.data.user is string
+                 && request.resource.data.user.size() <= 100));
+      allow delete: if isSignedIn();
     }
-
-    // Usuarios del panel: cada quien puede leer su propia ficha (para el login),
-    // el personal puede listar, y solo el admin crea/borra
+    // ---------- usuarios ----------
     match /usuarios/{uid} {
       allow get: if isSignedIn() && (request.auth.uid == uid || isStaff());
       allow list: if isStaff();
-      allow create, update, delete: if isAdmin();
+      allow write: if isAdmin();
     }
-
-    // Historial de actividad: solo admins lo leen, el personal lo escribe
-    match /historial/{histId} {
+    // ---------- historial ----------
+    match /historial/{logId} {
       allow read: if isAdmin();
       allow create: if isStaff();
+      allow update, delete: if false;
     }
-
-    // Todo lo demas: bloqueado
+    // ---------- htmlFiles ----------
+    match /htmlFiles/{fileId} {
+      allow read, write: if isStaff();
+    }
+    // ---------- todo lo demas: denegado ----------
     match /{document=**} {
       allow read, write: if false;
     }
