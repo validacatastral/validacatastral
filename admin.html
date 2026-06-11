@@ -312,13 +312,13 @@ tr:hover td{background:rgba(14,122,255,0.04);}
 import{initializeApp,deleteApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import{getFirestore,collection,addDoc,deleteDoc,doc,onSnapshot,query,orderBy,setDoc,getDocs,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,createUserWithEmailAndPassword}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import{initializeAppCheck,RecaptchaV3Provider}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check.js";
+import{initializeAppCheck,ReCaptchaV3Provider}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check.js";
 const fCfg={apiKey:"AIzaSyBrTT-bK_UTZLSg6BVMiVviIQmAYFbGo9Q",authDomain:"dataforge-mio.firebaseapp.com",projectId:"dataforge-mio",storageBucket:"dataforge-mio.firebasestorage.app",messagingSenderId:"687282166437",appId:"1:687282166437:web:83772a6d56c52185784b4c"};
 const app=initializeApp(fCfg);
 // App Check: protege Firestore para que solo esta web pueda escribir.
 // La clave de sitio reCAPTCHA v3 es publica (puede ir en el repo).
 const RECAPTCHA_SITE_KEY="6Le42RktAAAAAFZI91BJDPkLWMbgbB72eZjuID2J";
-try{initializeAppCheck(app,{provider:new RecaptchaV3Provider(RECAPTCHA_SITE_KEY),isTokenAutoRefreshEnabled:true});}catch(e){console.warn('appcheck',e);}
+try{initializeAppCheck(app,{provider:new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),isTokenAutoRefreshEnabled:true});}catch(e){console.warn('appcheck',e);}
 const db=getFirestore(app);
 const auth=getAuth(app);
 const MAIL='@validacatastral.com';
