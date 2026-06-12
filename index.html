@@ -30,11 +30,15 @@ body{background:var(--bg-void);color:var(--text);font-family:var(--body);min-hei
 html[data-theme="dark"] .ic-sun{display:block;}
 html[data-theme="dark"] .ic-moon{display:none;}
 .main{flex:1;padding:20px;max-width:1500px;width:100%;margin:0 auto;}
-.ph{margin-bottom:18px;}
-.ph h1{font-family:var(--head);font-size:21px;font-weight:600;margin-bottom:3px;}
+.ph{margin-bottom:14px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.ph h1{font-family:var(--head);font-size:18px;font-weight:600;margin-bottom:0;}
 .ph h1 span{color:var(--cyan);}
-.ph p{color:var(--mute);font-size:13px;}
+.ph p{color:var(--mute);font-size:12px;}
 .card{background:var(--bg-panel);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;}
+.selbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 16px;}
+.selgrp{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.sl{font-family:var(--head);font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--mute);white-space:nowrap;}
+.seldiv{width:1px;height:22px;background:var(--border);flex-shrink:0;}
 .ct{font-family:var(--head);font-size:11px;font-weight:500;letter-spacing:0.07em;color:var(--mute);text-transform:uppercase;margin-bottom:12px;}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;}
 .tab{padding:7px 16px;border-radius:20px;border:1px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--head);color:var(--mute);background:var(--bg-card);transition:all 0.15s;}
@@ -167,6 +171,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 @media(max-width:720px){
 .hsb{display:none!important;}
 #dseg{display:none;}
+.seldiv{display:none!important;}
+.selbar{gap:8px;}
 .tw.dense .sbs{display:flex;}
 .tw.dense .cp{display:block;}
 .tw.dense td{padding:8px 12px;}
@@ -211,9 +217,12 @@ window.toggleTheme=function(){var c=document.documentElement.getAttribute('data-
   </div>
 </div>
 <main class="main">
-  <div class="ph"><h1>Vista <span>p&uacute;blica</span></h1><p>Selecciona distrito y categor&iacute;a &middot; filtros por columna &middot; revisi&oacute;n en tiempo real</p></div>
-  <div class="card"><div class="ct">Distritos</div><div class="tabs" id="distTabs"><div class="ld"><div class="sp"></div>Cargando...</div></div></div>
-  <div class="card" id="catPanel" style="display:none;"><div class="ct">Categor&iacute;as &middot; <span id="distBC" style="color:var(--cyan);"></span></div><div class="tabs" id="catTabs"></div></div>
+  <div class="ph"><h1>Vista <span>p&uacute;blica</span></h1><p>Selecciona distrito y categor&iacute;a &middot; revisi&oacute;n en tiempo real</p></div>
+  <div class="card selbar">
+    <div class="selgrp"><span class="sl">Distrito</span><div class="tabs" id="distTabs"><div class="ld"><div class="sp"></div>Cargando...</div></div></div>
+    <div class="seldiv" id="catSep" style="display:none;"></div>
+    <div class="selgrp" id="catPanel" style="display:none;"><span class="sl">Categor&iacute;a</span><div class="tabs" id="catTabs"></div></div>
+  </div>
   <div class="card" id="tablePanel" style="display:none;">
     <div class="ct"><span id="tableTitle"></span></div>
     <div class="prog"><span id="ptxt">0 de 0 revisadas</span><div class="pbar"><div class="pfill" id="pfill"></div></div></div>
@@ -306,7 +315,7 @@ function getDistsCon(){var ds={};S.files.forEach(function(f){if(f.distrito)ds[f.
 function renderDistTabs(){
   var el=document.getElementById('distTabs');
   var dists=getDistsCon();
-  if(!dists.length){el.innerHTML='<div class="empty">No hay datos disponibles aun.</div>';document.getElementById('catPanel').style.display='none';document.getElementById('tablePanel').style.display='none';return;}
+  if(!dists.length){el.innerHTML='<div class="empty">No hay datos disponibles aun.</div>';document.getElementById('catPanel').style.display='none';document.getElementById('catSep').style.display='none';document.getElementById('tablePanel').style.display='none';return;}
   el.innerHTML='';
   dists.forEach(function(d){
     var t=document.createElement('button');
@@ -327,8 +336,8 @@ window.selDist=function(d){
   S.curDist=d;S.curType=null;S.page=1;S.cf={};S.sort={col:-1,dir:1};setRSUI('all');
   var gs=document.getElementById('gsearch');if(gs)gs.value='';
   document.querySelectorAll('#distTabs .tab').forEach(function(t){t.classList.toggle('active',t.dataset.v===d);});
-  document.getElementById('distBC').textContent=d;
-  document.getElementById('catPanel').style.display='block';
+  document.getElementById('catPanel').style.display='flex';
+  document.getElementById('catSep').style.display='block';
   document.getElementById('tablePanel').style.display='none';
   if(window.updateHSB)updateHSB();
   renderCatTabs();
@@ -578,20 +587,24 @@ try{if(localStorage.getItem('vc-dense')==='1')setDen(1);}catch(e){}
 window.toast=function(msg,color){var d=document.createElement('div');d.className='tm';d.style.borderColor=color||'var(--blue)';d.textContent=msg;document.getElementById('toast').appendChild(d);setTimeout(function(){d.remove();},4000);};
 
 // BARRA HORIZONTAL FLOTANTE (sincronizada con el contenedor de la tabla)
-var twEl=document.querySelector('.tw'),hsbEl=document.getElementById('hsb'),hsbInner=document.getElementById('hsbi'),hsbLock=false;
-hsbEl.addEventListener('scroll',function(){if(hsbLock)return;hsbLock=true;twEl.scrollLeft=hsbEl.scrollLeft;requestAnimationFrame(function(){hsbLock=false;});});
-twEl.addEventListener('scroll',function(){if(hsbLock)return;hsbLock=true;hsbEl.scrollLeft=twEl.scrollLeft;requestAnimationFrame(function(){hsbLock=false;});});
+var twEl=document.querySelector('.tw'),hsbEl=document.getElementById('hsb'),hsbInner=document.getElementById('hsbi'),hsbRaf=0;
+hsbEl.addEventListener('scroll',function(){if(twEl.scrollLeft!==hsbEl.scrollLeft)twEl.scrollLeft=hsbEl.scrollLeft;});
+twEl.addEventListener('scroll',function(){if(hsbEl.scrollLeft!==twEl.scrollLeft)hsbEl.scrollLeft=twEl.scrollLeft;});
 window.updateHSB=function(){
-  var panel=document.getElementById('tablePanel');
-  if(panel.style.display==='none'||window.innerWidth<=720||twEl.scrollWidth<=twEl.clientWidth+2){hsbEl.style.display='none';return;}
-  var r=twEl.getBoundingClientRect();
-  // ocultar si la tabla no esta a la vista, o si su propio borde inferior (con su barra nativa) ya es visible
-  if(r.top>window.innerHeight-60||r.bottom<120||r.bottom<=window.innerHeight-4){hsbEl.style.display='none';return;}
-  hsbEl.style.display='block';
-  hsbEl.style.left=Math.max(r.left,0)+'px';
-  hsbEl.style.width=Math.min(r.width,window.innerWidth)+'px';
-  hsbInner.style.width=twEl.scrollWidth+'px';
-  if(!hsbLock)hsbEl.scrollLeft=twEl.scrollLeft;
+  if(hsbRaf)return;
+  hsbRaf=requestAnimationFrame(function(){
+    hsbRaf=0;
+    var panel=document.getElementById('tablePanel');
+    if(panel.style.display==='none'||window.innerWidth<=720||twEl.scrollWidth<=twEl.clientWidth+2){hsbEl.style.display='none';return;}
+    var r=twEl.getBoundingClientRect();
+    if(r.top>window.innerHeight-60||r.bottom<120||r.bottom<=window.innerHeight-4){hsbEl.style.display='none';return;}
+    var was=hsbEl.style.display;
+    hsbEl.style.display='block';
+    hsbEl.style.left=Math.max(r.left,0)+'px';
+    hsbEl.style.width=Math.min(r.width,window.innerWidth)+'px';
+    hsbInner.style.width=twEl.scrollWidth+'px';
+    if(was!=='block')hsbEl.scrollLeft=twEl.scrollLeft;
+  });
 };
 window.addEventListener('resize',updateHSB);
 window.addEventListener('scroll',updateHSB,true);
