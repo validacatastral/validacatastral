@@ -40,6 +40,8 @@ html[data-theme="dark"] .ic-moon{display:none;}
 .sl{font-family:var(--head);font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--mute);white-space:nowrap;}
 .seldiv{width:1px;height:22px;background:var(--border);flex-shrink:0;}
 .ct{font-family:var(--head);font-size:11px;font-weight:500;letter-spacing:0.07em;color:var(--mute);text-transform:uppercase;margin-bottom:12px;}
+.fdesc{font-size:12.5px;color:var(--text);background:var(--bg-deep);border:1px solid var(--border);border-left:3px solid var(--cyan);border-radius:7px;padding:8px 12px;margin:-4px 0 12px;line-height:1.5;}
+.fdesc b{font-family:var(--mono);font-size:10px;color:var(--cyan);letter-spacing:0.06em;font-weight:500;margin-right:6px;}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;}
 .tab{padding:7px 16px;border-radius:20px;border:1px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--head);color:var(--mute);background:var(--bg-card);transition:all 0.15s;}
 .tab:hover{border-color:var(--cyan);color:var(--text);}
@@ -225,6 +227,7 @@ window.toggleTheme=function(){var c=document.documentElement.getAttribute('data-
   </div>
   <div class="card" id="tablePanel" style="display:none;">
     <div class="ct"><span id="tableTitle"></span></div>
+    <div class="fdesc" id="fdesc" style="display:none;"></div>
     <div class="prog"><span id="ptxt">0 de 0 revisadas</span><div class="pbar"><div class="pfill" id="pfill"></div></div></div>
     <div class="toolbar">
       <div class="sb"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span><input type="text" id="gsearch" placeholder="Buscar en todos los campos&hellip;" oninput="applyF()"></div>
@@ -307,7 +310,7 @@ function progCount(prefix){var pre=sanKey(prefix),c=0;for(var k in S.reviews){if
 function rowsTotal(filterFn){var t=0;S.files.forEach(function(f){if(filterFn(f))t+=(f.rowCount!=null?f.rowCount:((f._rows||f.rows||[]).length||0));});return t;}
 function pctFor(prefix,total){if(!total)return null;var p=Math.round(progCount(prefix)/total*100);return Math.min(p,100);}
 onSnapshot(doc(db,'config','settings'),function(sn){if(sn.exists()){var d=sn.data();S.distritos=d.distritos||[];S.categorias=d.categorias||[];}renderDistTabs();});
-onSnapshot(query(collection(db,'excelFiles'),orderBy('date','desc')),function(sn){S.files=[];sn.forEach(function(d){S.files.push(Object.assign({},d.data(),{fireId:d.id}));});renderDistTabs();if(S.curType)ensureCurRows();});
+onSnapshot(query(collection(db,'excelFiles'),orderBy('date','desc')),function(sn){S.files=[];sn.forEach(function(d){S.files.push(Object.assign({},d.data(),{fireId:d.id}));});renderDistTabs();updFdesc();if(S.curType)ensureCurRows();});
 onSnapshot(collection(db,'reviews'),function(sn){S.reviews={};sn.forEach(function(d){S.reviews[d.id]=d.data();});renderDistTabs();if(S.curType)renderTable();});
 
 function getDistsCon(){var ds={};S.files.forEach(function(f){if(f.distrito)ds[f.distrito]=true;});return Object.keys(ds);}
@@ -379,11 +382,20 @@ window.selCat=async function(type){
   S.curType=type;S.page=1;S.sort={col:-1,dir:1};S.cf={};setRSUI('all');
   var gs=document.getElementById('gsearch');if(gs)gs.value='';
   document.getElementById('tableTitle').textContent=S.curDist+' - '+type;
+  updFdesc();
   document.querySelectorAll('#catTabs .tab').forEach(function(t){t.classList.toggle('active',t.dataset.v===type);});
   document.getElementById('tablePanel').style.display='block';
   document.getElementById('tbody').innerHTML='<tr><td colspan="99"><div class="ld"><div class="sp"></div>Cargando datos...</div></td></tr>';
   await ensureCurRows();
 };
+function updFdesc(){
+  var el=document.getElementById('fdesc');if(!el)return;
+  if(!S.curDist||!S.curType){el.style.display='none';return;}
+  var descs=[];S.files.forEach(function(f){if(f.distrito===S.curDist&&f.type===S.curType&&f.description&&String(f.description).trim())descs.push(String(f.description).trim().slice(0,200));});
+  if(!descs.length){el.style.display='none';el.innerHTML='';return;}
+  el.innerHTML='<b>NOTA</b>'+descs.map(function(d){return eh(d);}).join(' &middot; ');
+  el.style.display='block';
+}
 
 function buildData(){
   var fs=S.files.filter(function(f){return f.distrito===S.curDist&&f.type===S.curType;});
