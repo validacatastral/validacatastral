@@ -160,6 +160,55 @@ tr:hover td{background:rgba(47,159,208,0.04);}
 #toast{position:fixed;bottom:20px;right:20px;z-index:9998;display:flex;flex-direction:column;gap:6px;}
 .toast-msg{background:var(--bg-panel);border:1px solid var(--accent-blue);color:var(--text-prime);padding:9px 14px;border-radius:7px;font-size:11px;font-family:var(--font-mono);box-shadow:0 0 16px rgba(0,0,0,0.4);animation:slideup 0.2s ease;max-width:280px;}
 @keyframes slideup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* ===== Refinado visual (jun-2026) ===== */
+body{background:radial-gradient(1200px 600px at 80% -10%,rgba(47,159,208,0.05),transparent 60%),radial-gradient(900px 500px at -10% 110%,rgba(167,139,250,0.04),transparent 60%),var(--bg-void);}
+.topbar{backdrop-filter:blur(6px);background:rgba(12,16,21,0.92);box-shadow:0 1px 0 rgba(63,198,238,0.06);}
+.sidebar{background:linear-gradient(180deg,var(--bg-deep),rgba(12,16,21,0.7));}
+.nav-item{border-radius:0 8px 8px 0;margin-right:8px;}
+.panel-card,.stat-card,.progress-card,.user-card,.file-item,.hist-item,.comment-item{background:linear-gradient(180deg,rgba(27,35,45,0.45),rgba(16,21,28,0.65)),var(--bg-card);box-shadow:0 1px 0 rgba(255,255,255,0.02) inset,0 6px 18px rgba(0,0,0,0.22);}
+.stat-card{transition:transform 0.18s ease,border-color 0.18s ease;}
+.stat-card:hover{transform:translateY(-2px);border-color:rgba(63,198,238,0.35);}
+.stat-value{font-size:30px;letter-spacing:1px;}
+.stat-sub{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-top:5px;letter-spacing:0.5px;}
+.stat-bar{height:4px;background:var(--bg-deep);border-radius:3px;overflow:hidden;margin-top:8px;}
+.stat-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent-purple),var(--accent-cyan));border-radius:3px;width:0;transition:width 1s cubic-bezier(0.4,0,0.2,1);}
+@keyframes cardflash{0%{box-shadow:0 0 0 0 rgba(63,217,154,0.45)}100%{box-shadow:0 0 0 14px rgba(63,217,154,0)}}
+.stat-card.flash{animation:cardflash 0.9s ease-out;}
+.mx-cols{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,1fr);gap:16px;margin-bottom:16px;}
+.mx-cols2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:980px){.mx-cols,.mx-cols2{grid-template-columns:1fr;}}
+.mxd-block{margin-bottom:14px;}
+.mxd-name{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:1px;color:var(--accent-purple);margin-bottom:7px;display:flex;justify-content:space-between;align-items:baseline;}
+.mxd-name small{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:1px;}
+.mxd-row{display:grid;grid-template-columns:130px 1fr 92px;gap:10px;align-items:center;padding:6px 8px;border-radius:7px;transition:background 0.15s;}
+.mxd-row:hover{background:rgba(47,159,208,0.05);}
+.mxd-type{font-size:11px;font-weight:600;color:var(--text-prime);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mxd-bar{height:6px;background:var(--bg-deep);border:1px solid rgba(35,48,63,0.8);border-radius:4px;overflow:hidden;}
+.mxd-bar i{display:block;height:100%;border-radius:4px;width:0;transition:width 1s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 8px rgba(63,198,238,0.35);}
+.mxd-pct{font-family:var(--font-mono);font-size:10px;color:var(--text-mute);text-align:right;white-space:nowrap;}
+.mx-online{display:flex;flex-direction:column;gap:7px;}
+.mxo-row{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--text-mute);background:var(--bg-deep);border:1px solid var(--border);border-radius:7px;padding:7px 10px;}
+.mxo-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.mxo-n{margin-left:auto;color:var(--text-prime);font-size:13px;}
+.mxf-item{display:flex;align-items:center;gap:9px;padding:6px 4px;border-bottom:1px solid rgba(35,48,63,0.5);}
+.mxf-item:last-child{border-bottom:none;}
+.mxf-tag{font-family:var(--font-mono);font-size:8px;color:var(--accent-blue);background:rgba(47,159,208,0.08);border:1px solid rgba(47,159,208,0.2);border-radius:4px;padding:2px 5px;flex-shrink:0;}
+.mxf-name{font-size:11px;font-weight:500;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mxf-meta{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);flex-shrink:0;}
+.mxa-item{display:flex;align-items:flex-start;gap:8px;padding:5px 4px;border-bottom:1px solid rgba(35,48,63,0.5);}
+.mxa-item:last-child{border-bottom:none;}
+.mxa-msg{font-size:11px;color:var(--text-prime);flex:1;min-width:0;}
+.mxa-meta{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-top:1px;}
+.chips{display:inline-flex;gap:5px;flex-wrap:wrap;}
+.chip{padding:4px 11px;border-radius:14px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-mute);font-family:var(--font-head);font-size:11px;font-weight:600;letter-spacing:0.5px;cursor:pointer;transition:all 0.15s;}
+.chip:hover{color:var(--text-prime);border-color:var(--accent-blue);}
+.chip.on{background:rgba(47,159,208,0.14);border-color:var(--accent-blue);color:var(--accent-cyan);}
+.cmt-actions{display:flex;gap:6px;margin-top:7px;}
+.cmt-src{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9px;color:var(--accent-cyan);background:rgba(63,198,238,0.06);border:1px solid rgba(63,198,238,0.18);border-radius:5px;padding:2px 7px;margin-top:6px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hist-actions{margin-left:auto;flex-shrink:0;}
+.file-desc{font-size:10px;color:var(--accent-cyan);opacity:0.85;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:italic;}
+:focus-visible{outline:2px solid var(--accent-blue);outline-offset:1px;border-radius:4px;}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
 </head>
 <body>
@@ -192,7 +241,7 @@ tr:hover td{background:rgba(47,159,208,0.04);}
   <div class="app-body">
     <nav class="sidebar">
       <div class="nav-label">General</div>
-      <div class="nav-item active" onclick="goto('dashboard')" id="nav-dashboard">&#11036; Dashboard</div>
+      <div class="nav-item active" onclick="goto('dashboard')" id="nav-dashboard">&#9638; Matriz</div>
       <div class="nav-item" onclick="goto('progreso')" id="nav-progreso">&#11096; Progreso <span class="nav-badge" id="badge-pct">0%</span></div>
       <div class="nav-label" style="margin-top:4px;">Archivos</div>
       <div class="nav-item" onclick="goto('excelAdmin')" id="nav-excelAdmin">&#9703; Gestor Excel <span class="nav-badge" id="badge-excel">0</span></div>
@@ -207,21 +256,43 @@ tr:hover td{background:rgba(47,159,208,0.04);}
     </nav>
     <main class="main">
       <div class="view active" id="view-dashboard">
-        <div class="page-header"><h1>&#11041; <span>DASH</span>BOARD</h1><p>Panel de control en tiempo real</p></div>
+        <div class="page-header"><h1>&#9638; <span>MATRIZ</span> DE CONTROL</h1><p>Estado general del sistema &middot; tiempo real</p></div>
         <div class="cards-grid">
-          <div class="stat-card blue"><div class="stat-value" id="d-excel">0</div><div class="stat-label">Archivos Excel</div></div>
-          <div class="stat-card green"><div class="stat-value" id="d-revisadas">0</div><div class="stat-label">Revisadas</div></div>
-          <div class="stat-card amber"><div class="stat-value" id="d-comentarios">0</div><div class="stat-label">Comentarios</div></div>
-          <div class="stat-card purple"><div class="stat-value" id="d-pct">0%</div><div class="stat-label">Progreso total</div></div>
+          <div class="stat-card blue"><div class="stat-value" id="d-excel">0</div><div class="stat-label">Archivos Excel</div><div class="stat-sub" id="d-excel-sub">&mdash;</div></div>
+          <div class="stat-card green" id="card-rev"><div class="stat-value" id="d-revisadas">0</div><div class="stat-label">Revisadas</div><div class="stat-sub" id="d-rev-sub">&mdash;</div></div>
+          <div class="stat-card amber"><div class="stat-value" id="d-comentarios">0</div><div class="stat-label">Comentarios</div><div class="stat-sub" id="d-com-sub">&mdash;</div></div>
+          <div class="stat-card purple"><div class="stat-value" id="d-pct">0%</div><div class="stat-label">Progreso total</div><div class="stat-bar"><i id="d-pct-bar"></i></div></div>
         </div>
-        <div class="panel-card">
-          <div class="panel-title">&#9650; Acciones r&#225;pidas</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn btn-success" onclick="goto('excelAdmin')">&#10133; Subir Excel</button>
-            <button class="btn btn-primary" onclick="goto('progreso')">&#11096; Ver progreso</button>
-            <button class="btn btn-amber" onclick="copyPublicLink()">&#9673; Link p&#250;blico</button>
-            <button class="btn btn-purple admin-only" onclick="goto('htmlAdmin')">&#10022; Subir HTML</button>
-            <button class="btn btn-amber admin-only" onclick="goto('configuracion')">&#9881; Configuraci&#243;n</button>
+        <div class="mx-cols">
+          <div class="panel-card">
+            <div class="panel-title">&#9673; Avance por distrito</div>
+            <div id="mxDist"><div class="empty-state">Sin datos a&#250;n.</div></div>
+          </div>
+          <div>
+            <div class="panel-card">
+              <div class="panel-title">&#9650; Acciones r&#225;pidas</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-success" onclick="goto('excelAdmin')">&#10133; Subir Excel</button>
+                <button class="btn btn-primary" onclick="goto('progreso')">&#11096; Ver progreso</button>
+                <button class="btn btn-amber" onclick="copyPublicLink()">&#9673; Link p&#250;blico</button>
+                <button class="btn btn-purple admin-only" onclick="goto('htmlAdmin')">&#10022; Subir HTML</button>
+                <button class="btn btn-amber admin-only" onclick="goto('configuracion')">&#9881; Configuraci&#243;n</button>
+              </div>
+            </div>
+            <div class="panel-card">
+              <div class="panel-title">&#9787; En l&#237;nea ahora</div>
+              <div class="mx-online" id="mxOnline"><div class="empty-state" style="padding:14px;">&mdash;</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="mx-cols2">
+          <div class="panel-card">
+            <div class="panel-title">&#9703; Archivos publicados</div>
+            <div id="mxFiles"><div class="empty-state">Sin archivos.</div></div>
+          </div>
+          <div class="panel-card master-only">
+            <div class="panel-title">&#9776; Actividad reciente</div>
+            <div id="mxAct"><div class="empty-state">Sin actividad.</div></div>
           </div>
         </div>
       </div>
@@ -229,7 +300,12 @@ tr:hover td{background:rgba(47,159,208,0.04);}
         <div class="page-header"><h1>&#11096; <span>Progreso</span></h1><p>Por Distrito y Categor&#237;a</p></div>
         <div id="progressByDistrito"><div class="empty-state">Cargando...</div></div>
         <div class="panel-card">
-          <div class="panel-title">&#128172; Comentarios del p&#250;blico</div>
+          <div class="panel-title">&#128172; Comentarios del p&#250;blico <span class="nav-badge" id="cmtCount">0</span></div>
+          <div class="filters-row" style="margin-bottom:10px;">
+            <select id="cmtDist" onchange="renderComments()"><option value="">Todos los distritos</option></select>
+            <select id="cmtState" onchange="renderComments()"><option value="">Todos los estados</option><option value="done">&#10003; Revisados</option><option value="pend">&#9675; Pendientes</option></select>
+            <input type="search" id="cmtSearch" placeholder="Buscar texto, c&#243;digo o autor..." oninput="renderComments()" style="flex:1;min-width:160px;">
+          </div>
           <div id="commentsList"><div class="empty-state">Sin comentarios a&#250;n.</div></div>
         </div>
       </div>
@@ -240,6 +316,7 @@ tr:hover td{background:rgba(47,159,208,0.04);}
           <div style="display:flex;align-items:flex-end;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
             <div><div style="font-size:9px;color:var(--text-mute);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:4px;">DISTRITO</div><select id="excelDistrito"><option value="">-- Seleccionar --</option></select></div>
             <div><div style="font-size:9px;color:var(--text-mute);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:4px;">CATEGOR&#205;A</div><select id="excelType"><option value="">-- Seleccionar --</option></select></div>
+            <div style="flex:1;min-width:220px;"><div style="font-size:9px;color:var(--text-mute);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:4px;">DESCRIPCI&#211;N <span style="color:var(--text-dim);">(opcional &middot; visible al p&#250;blico)</span></div><input type="text" id="excelDesc" maxlength="200" placeholder="Ej.: Sector 14, levantamiento de campo mayo 2026" style="width:100%;"></div>
             <div id="uploadStatus"></div>
           </div>
           <label for="excelUpload"><div class="upload-zone"><div style="font-size:22px;margin-bottom:5px;">&#9703;</div><div style="font-size:13px;font-weight:600;">Arrastra archivos Excel aqu&#237;</div><div style="font-size:11px;color:var(--text-mute);margin-top:3px;">o haz clic &middot; .xlsx .xls</div></div></label>
@@ -303,8 +380,22 @@ tr:hover td{background:rgba(47,159,208,0.04);}
         <div class="panel-card"><div class="panel-title">&#9787; Usuarios registrados</div><div class="users-grid" id="usersGrid"><div class="empty-state">Cargando...</div></div></div>
       </div>
       <div class="view master-only" id="view-historial">
-        <div class="page-header"><h1>&#9776; <span>Historial</span></h1><p>Solo admin maestro</p></div>
-        <div class="panel-card"><div class="panel-title">&#9776; Registro</div><div id="historialList"><div class="empty-state">Sin actividad.</div></div></div>
+        <div class="page-header"><h1>&#9776; <span>Historial</span></h1><p>Registro de auditor&#237;a &middot; solo admin</p></div>
+        <div class="panel-card">
+          <div class="panel-title">&#9776; Registro <span class="nav-badge" id="histCount">0</span></div>
+          <div class="filters-row" style="margin-bottom:10px;">
+            <div class="chips" id="histChips">
+              <button class="chip on" data-v="" onclick="setHistF('')">Todos</button>
+              <button class="chip" data-v="LOGIN" onclick="setHistF('LOGIN')">Sesiones</button>
+              <button class="chip" data-v="EXCEL" onclick="setHistF('EXCEL')">Excel</button>
+              <button class="chip" data-v="HTML" onclick="setHistF('HTML')">HTML</button>
+              <button class="chip" data-v="USER" onclick="setHistF('USER')">Usuarios</button>
+            </div>
+            <input type="search" id="histSearch" placeholder="Buscar..." oninput="renderHistorial()" style="flex:1;min-width:140px;">
+            <button class="btn btn-amber" onclick="purgeLogins()" style="font-size:10px;padding:5px 10px;">&#10006; Borrar sesiones antiguas</button>
+          </div>
+          <div id="historialList"><div class="empty-state">Sin actividad.</div></div>
+        </div>
       </div>
     </main>
   </div>
@@ -312,7 +403,7 @@ tr:hover td{background:rgba(47,159,208,0.04);}
 <div id="toast"></div>
 <script type="module">
 import{initializeApp,deleteApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import{getFirestore,collection,addDoc,deleteDoc,doc,onSnapshot,query,orderBy,setDoc,getDocs,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{getFirestore,collection,addDoc,deleteDoc,doc,onSnapshot,query,orderBy,setDoc,getDocs,getDoc,updateDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,createUserWithEmailAndPassword}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import{initializeAppCheck,ReCaptchaV3Provider}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check.js";
 const fCfg={apiKey:"AIzaSyBrTT-bK_UTZLSg6BVMiVviIQmAYFbGo9Q",authDomain:"dataforge-mio.firebaseapp.com",projectId:"dataforge-mio",storageBucket:"dataforge-mio.firebasestorage.app",messagingSenderId:"687282166437",appId:"1:687282166437:web:83772a6d56c52185784b4c"};
@@ -326,7 +417,7 @@ const auth=getAuth(app);
 const MAIL='@validacatastral.com';
 var CU=null,CR=null;
 var RPP=50;
-var S={excelFiles:[],htmlFiles:[],reviews:{},dbUsers:{},presence:{},historial:[],curType:null,curDist:null,page:1,sort:{col:-1,dir:1},colFilters:{},rows:[],headers:[],distritos:[],categorias:[]};
+var S={excelFiles:[],htmlFiles:[],reviews:{},dbUsers:{},presence:{},historial:[],curType:null,curDist:null,page:1,sort:{col:-1,dir:1},colFilters:{},rows:[],headers:[],distritos:[],categorias:[],histF:''};
 var DD=null;var dbLoaded=false;
 
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
@@ -347,6 +438,7 @@ function updateSelects(){
   var ed=document.getElementById('excelDistrito');if(ed)ed.innerHTML=ds;
   var et=document.getElementById('excelType');if(et)et.innerHTML=cs;
   var hd=document.getElementById('htmlDistrito');if(hd)hd.innerHTML=ds;
+  var cd=document.getElementById('cmtDist');if(cd){var prev=cd.value;cd.innerHTML='<option value="">Todos los distritos</option>'+S.distritos.map(function(d){return'<option value="'+eh(d)+'">'+eh(d)+'</option>';}).join('');cd.value=prev;}
 }
 
 function renderCfgLists(){
@@ -403,15 +495,52 @@ function startListeners(){
   onSnapshot(query(collection(db,'excelFiles'),orderBy('date','desc')),function(sn){S.excelFiles=[];sn.forEach(function(d){S.excelFiles.push(Object.assign({},d.data(),{fireId:d.id}));});updateUI();if(S.curType)ensureCurRows();});
   onSnapshot(query(collection(db,'htmlFiles'),orderBy('date','desc')),function(sn){S.htmlFiles=[];sn.forEach(function(d){S.htmlFiles.push(Object.assign({},d.data(),{fireId:d.id}));});renderHtmlList();document.getElementById('badge-html').textContent=S.htmlFiles.length;document.getElementById('html-count').textContent=S.htmlFiles.length;});
   onSnapshot(collection(db,'reviews'),function(sn){S.reviews={};sn.forEach(function(d){S.reviews[d.id]=d.data();});updateProgress();renderComments();if(S.curType)renderAdminTable();});
-  if(CR==='admin')onSnapshot(query(collection(db,'historial'),orderBy('date','desc')),function(sn){S.historial=[];sn.forEach(function(d){S.historial.push(d.data());});renderHistorial();});
+  if(CR==='admin')onSnapshot(query(collection(db,'historial'),orderBy('date','desc')),function(sn){S.historial=[];sn.forEach(function(d){S.historial.push(Object.assign({},d.data(),{fireId:d.id}));});renderHistorial();renderMatrix();});
 }
 async function logH(t,m){try{await addDoc(collection(db,'historial'),{type:t,msg:m,user:CU,role:CR,date:new Date().toISOString()});}catch(e){}}
 
 function renderHistorial(){
-  var el=document.getElementById('historialList');if(!S.historial.length){el.innerHTML='<div class="empty-state">Sin actividad.</div>';return;}
-  var tc={'LOGIN':'var(--accent-blue)','EXCEL_UPLOAD':'var(--accent-green)','EXCEL_DELETE':'var(--accent-amber)','HTML_UPLOAD':'var(--accent-purple)','HTML_DELETE':'var(--accent-amber)','USER_CREATE':'var(--accent-cyan)','USER_DELETE':'var(--accent-red)'};
-  el.innerHTML=S.historial.slice(0,100).map(function(h){var c=tc[h.type]||'var(--text-mute)';return'<div class="hist-item"><div class="hist-type" style="background:rgba(0,0,0,0.3);border:1px solid '+c+';color:'+c+';">'+eh((h.type||'').split('_')[0])+'</div><div class="hist-body"><div class="hist-msg">'+eh(h.msg)+'</div><div class="hist-meta">'+eh(h.user||'-')+' - '+new Date(h.date).toLocaleString('es')+'</div></div></div>';}).join('');
+  var el=document.getElementById('historialList');if(!el)return;
+  var tc={'LOGIN':'var(--accent-blue)','EXCEL_UPLOAD':'var(--accent-green)','EXCEL_DELETE':'var(--accent-amber)','EXCEL_EDIT':'var(--accent-cyan)','HTML_UPLOAD':'var(--accent-purple)','HTML_DELETE':'var(--accent-amber)','USER_CREATE':'var(--accent-cyan)','USER_DELETE':'var(--accent-red)','REVIEW_DELETE':'var(--accent-red)','HIST_PURGE':'var(--accent-amber)'};
+  var q=(document.getElementById('histSearch')?document.getElementById('histSearch').value.trim().toLowerCase():'');
+  var items=S.historial.filter(function(h){
+    if(S.histF&&String(h.type||'').indexOf(S.histF)!==0)return false;
+    if(q&&(String(h.msg||'')+' '+String(h.user||'')).toLowerCase().indexOf(q)<0)return false;
+    return true;
+  });
+  var cnt=document.getElementById('histCount');if(cnt)cnt.textContent=items.length;
+  if(!items.length){el.innerHTML='<div class="empty-state">Sin actividad con esos filtros.</div>';return;}
+  el.innerHTML='';
+  items.slice(0,150).forEach(function(h){
+    var c=tc[h.type]||'var(--text-mute)';
+    var item=document.createElement('div');item.className='hist-item';
+    item.innerHTML='<div class="hist-type" style="background:rgba(0,0,0,0.3);border:1px solid '+c+';color:'+c+';">'+eh((h.type||'').split('_')[0])+'</div><div class="hist-body"><div class="hist-msg">'+eh(h.msg)+'</div><div class="hist-meta">'+eh(h.user||'-')+' - '+new Date(h.date).toLocaleString('es')+'</div></div>';
+    var acts=document.createElement('div');acts.className='hist-actions';
+    var db5=document.createElement('button');db5.className='btn btn-danger';db5.textContent='x';db5.title='Borrar esta entrada';
+    db5.onclick=(function(id){return function(){delHist(id);};})(h.fireId);
+    acts.appendChild(db5);item.appendChild(acts);
+    el.appendChild(item);
+  });
 }
+window.setHistF=function(v){S.histF=v;document.querySelectorAll('#histChips .chip').forEach(function(c){c.classList.toggle('on',c.dataset.v===v);});renderHistorial();};
+window.delHist=async function(id){
+  if(!id||!confirm('Borrar esta entrada del historial? Esta accion no se puede deshacer.'))return;
+  try{await deleteDoc(doc(db,'historial',id));toast('Entrada borrada','var(--accent-amber)');}
+  catch(e){toast(e.code==='permission-denied'?'Publica las reglas nuevas de Firestore para habilitar el borrado':'Error: '+e.message,'var(--accent-red)');}
+};
+window.purgeLogins=async function(){
+  var logins=S.historial.filter(function(h){return h.type==='LOGIN'&&h.fireId;});
+  if(!logins.length){toast('No hay entradas de sesion','var(--accent-amber)');return;}
+  var keep=10;
+  var old=logins.slice(keep);
+  if(!old.length){toast('Solo hay '+logins.length+' sesiones; se conservan las 10 mas recientes','var(--accent-amber)');return;}
+  if(!confirm('Borrar '+old.length+' inicios de sesion antiguos? (se conservan los '+keep+' mas recientes)'))return;
+  var okN=0;
+  try{for(var i=0;i<old.length;i++){await deleteDoc(doc(db,'historial',old[i].fireId));okN++;}
+    logH('HIST_PURGE','Limpio historial: borro '+okN+' sesiones antiguas');
+    toast(okN+' entradas borradas','var(--accent-amber)');}
+  catch(e){toast(e.code==='permission-denied'?'Publica las reglas nuevas de Firestore para habilitar el borrado':'Error tras '+okN+': '+e.message,'var(--accent-red)');}
+};
 
 window.uploadExcel=function(e){
   var dist=document.getElementById('excelDistrito').value,type=document.getElementById('excelType').value;
@@ -427,7 +556,8 @@ window.uploadExcel=function(e){
       var chunks=[],cur=[],sz=0;
       json.forEach(function(row){var s=JSON.stringify(row).length;if(cur.length&&(sz+s>700000||cur.length>=400)){chunks.push(cur);cur=[];sz=0;}cur.push(row);sz+=s;});
       if(cur.length)chunks.push(cur);
-      var ref=await addDoc(collection(db,'excelFiles'),{name:file.name,type:type,distrito:dist,date:new Date().toISOString(),size:(file.size/1024).toFixed(1)+'KB',headers:Object.keys(json[0]),rowCount:json.length,chunked:true,chunkCount:chunks.length,uploadedBy:CU});
+      var descEl=document.getElementById('excelDesc');var desc=descEl?descEl.value.trim().slice(0,200):'';
+      var ref=await addDoc(collection(db,'excelFiles'),{name:file.name,type:type,distrito:dist,date:new Date().toISOString(),size:(file.size/1024).toFixed(1)+'KB',headers:Object.keys(json[0]),rowCount:json.length,chunked:true,chunkCount:chunks.length,uploadedBy:CU,description:desc});
       for(var i=0;i<chunks.length;i++){setSt('loading','Subiendo '+file.name+' ('+(i+1)+'/'+chunks.length+')...');await setDoc(doc(db,'excelFiles',ref.id,'chunks','c'+String(i).padStart(4,'0')),{i:i,rows:chunks[i]});}
       logH('EXCEL_UPLOAD','Subio: '+file.name+' ('+dist+'/'+type+') '+json.length+' filas');
       setSt('ok',file.name+' OK '+json.length+' filas');toast('Publicado: '+file.name,'var(--accent-green)');
@@ -444,6 +574,12 @@ window.uploadHtml=function(e){
 };
 
 window.delExcel=async function(id,name){if(!confirm('Eliminar '+name+'?'))return;try{var sn2=await getDocs(collection(db,'excelFiles',id,'chunks'));for(const d2 of sn2.docs){await deleteDoc(d2.ref);}await deleteDoc(doc(db,'excelFiles',id));logH('EXCEL_DELETE','Elimino: '+name);toast('Eliminado','var(--accent-amber)');}catch(e){toast('Error: '+e.message,'var(--accent-red)');}};
+window.editDesc=async function(id,cur,name){
+  var v=prompt('Descripcion del archivo (max 200 caracteres, visible en la vista publica).\nDeja vacio para quitarla.',cur||'');
+  if(v===null)return;v=v.trim().slice(0,200);
+  try{await updateDoc(doc(db,'excelFiles',id),{description:v});logH('EXCEL_EDIT','Edito descripcion de '+name+(v?(': '+v.slice(0,60)):' (la quito)'));toast(v?'Descripcion guardada':'Descripcion eliminada','var(--accent-green)');}
+  catch(e){toast('Error: '+e.message,'var(--accent-red)');}
+};
 window.delHtml=async function(id,name){if(!confirm('Eliminar '+name+'?'))return;await deleteDoc(doc(db,'htmlFiles',id));logH('HTML_DELETE','Elimino HTML: '+name);toast('Eliminado','var(--accent-amber)');};
 window.openHtml=function(b64,name){try{var html=decodeURIComponent(escape(atob(b64)));var blob=new Blob([html],{type:'text/html;charset=utf-8'});var url=URL.createObjectURL(blob);var w=window.open(url,'_blank');if(!w)toast('Permite pop-ups para: '+name,'var(--accent-amber)');setTimeout(function(){URL.revokeObjectURL(url);},5000);}catch(e){toast('Error: '+e.message,'var(--accent-red)');}};
 
@@ -569,6 +705,15 @@ function updateProgress(){
   Object.keys(S.reviews).forEach(function(rk){var rev=S.reviews[rk];if(!rev||!rev.done)return;var key=(rev.distrito||'Sin Distrito')+'|||'+(rev.tipo||rev.type||'Sin Categoria');var t=types[key];if(!t)return;t.done++;if(!t.lastDone||rev.doneDate>t.lastDone)t.lastDone=rev.doneDate;if(rev.doneBy)t.reviewers.add(rev.doneBy);});
   var ks=Object.keys(types),tA=ks.reduce(function(s,t){return s+types[t].total;},0),dA=ks.reduce(function(s,t){return s+types[t].done;},0),pA=tA?Math.round(dA/tA*100):0,tc=Object.values(S.reviews).filter(function(r){return r.comment&&r.comment.trim();}).length;
   document.getElementById('d-excel').textContent=S.excelFiles.length;document.getElementById('d-revisadas').textContent=dA;document.getElementById('d-comentarios').textContent=tc;document.getElementById('d-pct').textContent=pA+'%';document.getElementById('badge-pct').textContent=pA+'%';
+  var nd={};S.excelFiles.forEach(function(f){nd[f.distrito||'?']=true;});
+  var se=document.getElementById('d-excel-sub');if(se)se.textContent=tA.toLocaleString('es')+' filas en '+Object.keys(nd).length+' distrito'+(Object.keys(nd).length===1?'':'s');
+  var sr=document.getElementById('d-rev-sub');if(sr)sr.textContent=(tA-dA).toLocaleString('es')+' pendientes';
+  var cp=Object.values(S.reviews).filter(function(r){return r.comment&&r.comment.trim()&&!r.done;}).length;
+  var sc=document.getElementById('d-com-sub');if(sc)sc.textContent=cp?cp+' en filas pendientes':'todos en filas revisadas';
+  var pb=document.getElementById('d-pct-bar');if(pb)pb.style.width=pA+'%';
+  if(window._pd!=null&&dA>window._pd){var cr=document.getElementById('card-rev');if(cr){cr.classList.remove('flash');void cr.offsetWidth;cr.classList.add('flash');}}
+  window._pd=dA;
+  renderMatrix(types);
   var cut=Date.now()-270000,uN=Object.values(S.presence).filter(function(p){return(p.ts||0)>cut;}).length;
   var byD={};ks.forEach(function(k){var d=types[k];if(!byD[d.distrito])byD[d.distrito]=[];byD[d.distrito].push(d);});
   var colors=['#00d4ff','#00ff88','#8b5cf6','#ffaa00','#ff3860','#0e7aff'],R=42,C=2*Math.PI*R;
@@ -587,7 +732,109 @@ function updateProgress(){
   requestAnimationFrame(function(){requestAnimationFrame(function(){document.querySelectorAll('.circle-fg').forEach(function(el){el.style.strokeDashoffset=el.getAttribute('data-offset');});document.querySelectorAll('.bar-fill').forEach(function(el){el.style.width=el.getAttribute('data-pct')+'%';});});});
 }
 
-function renderComments(){var el=document.getElementById('commentsList');var items=Object.entries(S.reviews).filter(function(e){return e[1].comment&&e[1].comment.trim();}).map(function(e){return{id:e[0],rev:e[1]};});items.sort(function(a,b){return(b.rev.commentDate||'').localeCompare(a.rev.commentDate||'');});if(!items.length){el.innerHTML='<div class="empty-state">Sin comentarios aun.</div>';return;}el.innerHTML=items.map(function(c){return'<div class="comment-item'+(c.rev.done?' done':'')+'"><div class="comment-meta">'+eh(c.rev.distrito||'-')+' - '+eh(c.rev.type||'-')+' - '+new Date(c.rev.commentDate||'').toLocaleString('es')+(c.rev.done?' - <span style="color:var(--accent-green);">&#10003; Revisado</span>':'')+'</div><div class="comment-text">'+eh(c.rev.comment)+'</div></div>';}).join('');}
+function renderComments(){
+  var el=document.getElementById('commentsList');if(!el)return;
+  var fD=(document.getElementById('cmtDist')?document.getElementById('cmtDist').value:'');
+  var fS=(document.getElementById('cmtState')?document.getElementById('cmtState').value:'');
+  var q=(document.getElementById('cmtSearch')?document.getElementById('cmtSearch').value.trim().toLowerCase():'');
+  var items=Object.entries(S.reviews).filter(function(e){return e[1].comment&&e[1].comment.trim();}).map(function(e){return{id:e[0],rev:e[1]};});
+  items=items.filter(function(c){
+    if(fD&&(c.rev.distrito||'')!==fD)return false;
+    if(fS==='done'&&!c.rev.done)return false;
+    if(fS==='pend'&&c.rev.done)return false;
+    if(q&&(c.rev.comment+' '+c.id+' '+(c.rev.doneBy||'')).toLowerCase().indexOf(q)<0)return false;
+    return true;
+  });
+  items.sort(function(a,b){return(b.rev.commentDate||'').localeCompare(a.rev.commentDate||'');});
+  var cnt=document.getElementById('cmtCount');if(cnt)cnt.textContent=items.length;
+  if(!items.length){el.innerHTML='<div class="empty-state">Sin comentarios con esos filtros.</div>';return;}
+  el.innerHTML='';
+  items.forEach(function(c){
+    var r=c.rev;
+    var rowRef=c.id;var sep=rowRef.indexOf('__');if(sep>=0)rowRef=rowRef.slice(sep+2);
+    if(rowRef.length>48)rowRef=rowRef.slice(0,48)+'&#8230;';
+    var item=document.createElement('div');item.className='comment-item'+(r.done?' done':'');
+    item.innerHTML='<div class="comment-meta">'+eh(r.distrito||'-')+' &middot; '+eh(r.tipo||r.type||'-')+' &middot; '+(r.commentDate?new Date(r.commentDate).toLocaleString('es'):'-')+(r.doneBy?' &middot; por <span style="color:var(--accent-cyan);">'+eh(r.doneBy)+'</span>':'')+(r.done?' &middot; <span style="color:var(--accent-green);">&#10003; Revisado</span>':' &middot; <span style="color:var(--accent-amber);">&#9675; Pendiente</span>')+'</div>'+
+      '<div class="comment-text">'+eh(r.comment)+'</div>'+
+      '<div class="cmt-src" title="Procedencia: clave de la fila">&#9656; Fila: '+rowRef+'</div>';
+    var acts=document.createElement('div');acts.className='cmt-actions';
+    var b1=document.createElement('button');b1.className='btn btn-amber';b1.style.cssText='font-size:10px;padding:4px 9px;';b1.textContent='Borrar comentario';
+    b1.onclick=(function(id){return function(){clearComment(id);};})(c.id);
+    var b2=document.createElement('button');b2.className='btn btn-danger';b2.textContent='Eliminar fila completa';b2.title='Borra comentario Y estado de revision de la fila';
+    b2.onclick=(function(id){return function(){delReview(id);};})(c.id);
+    acts.appendChild(b1);acts.appendChild(b2);item.appendChild(acts);
+    el.appendChild(item);
+  });
+}
+window.clearComment=async function(key){
+  if(!confirm('Borrar SOLO el comentario? La fila conserva su estado de revision.'))return;
+  try{await updateDoc(doc(db,'reviews',key),{comment:'',commentDate:new Date().toISOString()});toast('Comentario borrado','var(--accent-amber)');}
+  catch(e){toast('Error: '+e.message,'var(--accent-red)');}
+};
+window.delReview=async function(key){
+  if(!confirm('Eliminar la revision completa? La fila volvera a estado PENDIENTE y se perdera el comentario.'))return;
+  try{await deleteDoc(doc(db,'reviews',key));logH('REVIEW_DELETE','Elimino revision/comentario: '+key.slice(0,80));toast('Revision eliminada','var(--accent-amber)');}
+  catch(e){toast('Error: '+e.message,'var(--accent-red)');}
+};
+
+var _mxColors=['#3fc6ee','#3fd99a','#a78bfa','#e8b14a','#e87070','#2f9fd0'];
+function renderMatrix(types){
+  if(!types){renderHistorialMini();return;}
+  // --- Avance por distrito ---
+  var el=document.getElementById('mxDist');
+  if(el){
+    var ks=Object.keys(types);
+    if(!ks.length){el.innerHTML='<div class="empty-state">Sin datos a&#250;n. Sube un Excel para empezar.</div>';}
+    else{
+      var byD={};ks.forEach(function(k){var t=types[k];if(!byD[t.distrito])byD[t.distrito]=[];byD[t.distrito].push(t);});
+      el.innerHTML='';
+      Object.keys(byD).forEach(function(dist){
+        var items=byD[dist];
+        var tT=items.reduce(function(s,t){return s+t.total;},0),tD=items.reduce(function(s,t){return s+t.done;},0);
+        var blk=document.createElement('div');blk.className='mxd-block';
+        blk.innerHTML='<div class="mxd-name">&#9673; '+eh(dist)+'<small>'+tD.toLocaleString('es')+' / '+tT.toLocaleString('es')+' filas &middot; '+(tT?Math.round(tD/tT*100):0)+'%</small></div>';
+        items.forEach(function(t,i){
+          var pct=t.total?Math.round(t.done/t.total*100):0;var c=_mxColors[i%_mxColors.length];
+          var row=document.createElement('div');row.className='mxd-row';row.style.cursor='pointer';row.title='Ver '+dist+' / '+t.type;
+          row.innerHTML='<div class="mxd-type">'+eh(t.type)+'</div><div class="mxd-bar"><i style="background:'+c+';" data-w="'+pct+'"></i></div><div class="mxd-pct" style="color:'+c+';">'+pct+'% &middot; '+t.done.toLocaleString('es')+'/'+t.total.toLocaleString('es')+'</div>';
+          row.onclick=(function(d2,t2){return function(){viewType(d2,t2);};})(dist,t.type);
+          blk.appendChild(row);
+        });
+        el.appendChild(blk);
+      });
+      requestAnimationFrame(function(){requestAnimationFrame(function(){el.querySelectorAll('.mxd-bar i').forEach(function(b){b.style.width=b.getAttribute('data-w')+'%';});});});
+    }
+  }
+  // --- En linea ---
+  var ol=document.getElementById('mxOnline');
+  if(ol){
+    var cut=Date.now()-270000,nPub=0,nStaff=0;
+    Object.values(S.presence).forEach(function(p){if((p.ts||0)<=cut)return;if(p.type==='public')nPub++;else nStaff++;});
+    ol.innerHTML='<div class="mxo-row"><div class="mxo-dot" style="background:var(--accent-green);"></div>Revisores (p&#250;blico)<span class="mxo-n">'+nPub+'</span></div>'+
+      '<div class="mxo-row"><div class="mxo-dot" style="background:var(--accent-purple);"></div>Panel (staff)<span class="mxo-n">'+nStaff+'</span></div>';
+  }
+  // --- Archivos ---
+  var fl=document.getElementById('mxFiles');
+  if(fl){
+    if(!S.excelFiles.length){fl.innerHTML='<div class="empty-state">Sin archivos.</div>';}
+    else{
+      fl.innerHTML='';
+      S.excelFiles.slice(0,8).forEach(function(f){
+        var it=document.createElement('div');it.className='mxf-item';
+        it.innerHTML='<div class="mxf-tag">'+eh((f.distrito||'?').slice(0,12))+' / '+eh((f.type||'?').slice(0,10))+'</div><div class="mxf-name" title="'+eh(f.name)+(f.description?' — '+eh(f.description):'')+'">'+eh(f.name)+'</div><div class="mxf-meta">'+(f.rowCount!=null?f.rowCount.toLocaleString('es'):'?')+' filas &middot; '+new Date(f.date).toLocaleDateString('es',{day:'2-digit',month:'2-digit'})+'</div>';
+        fl.appendChild(it);
+      });
+      if(S.excelFiles.length>8){var more=document.createElement('div');more.className='mxf-item';more.innerHTML='<div class="mxf-meta">+'+(S.excelFiles.length-8)+' archivos m&#225;s en el Gestor Excel</div>';fl.appendChild(more);}
+    }
+  }
+  renderHistorialMini();
+}
+function renderHistorialMini(){
+  var el=document.getElementById('mxAct');if(!el)return;
+  if(!S.historial.length){el.innerHTML='<div class="empty-state">Sin actividad.</div>';return;}
+  var tc={'LOGIN':'var(--accent-blue)','EXCEL_UPLOAD':'var(--accent-green)','EXCEL_DELETE':'var(--accent-amber)','EXCEL_EDIT':'var(--accent-cyan)','HTML_UPLOAD':'var(--accent-purple)','HTML_DELETE':'var(--accent-amber)','USER_CREATE':'var(--accent-cyan)','USER_DELETE':'var(--accent-red)','REVIEW_DELETE':'var(--accent-red)','HIST_PURGE':'var(--accent-amber)'};
+  el.innerHTML=S.historial.slice(0,6).map(function(h){var c=tc[h.type]||'var(--text-mute)';return'<div class="mxa-item"><div class="hist-type" style="background:rgba(0,0,0,0.3);border:1px solid '+c+';color:'+c+';">'+eh((h.type||'').split('_')[0])+'</div><div style="flex:1;min-width:0;"><div class="mxa-msg">'+eh(h.msg)+'</div><div class="mxa-meta">'+eh(h.user||'-')+' &middot; '+new Date(h.date).toLocaleString('es',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+'</div></div></div>';}).join('');
+}
 
 function renderHtmlList(){
   var el=document.getElementById('htmlFileList');if(!S.htmlFiles.length){el.innerHTML='<div class="empty-state">No hay archivos HTML aun.</div>';return;}
@@ -648,8 +895,9 @@ function renderExcelFileList(){
       var tTitle=document.createElement('div');tTitle.style.cssText='font-family:var(--font-mono);font-size:9px;color:var(--accent-blue);letter-spacing:2px;margin-bottom:6px;padding-left:8px;cursor:pointer;';tTitle.textContent='> '+t+' ('+byD[d][t].length+')';tTitle.onclick=(function(dist,type){return function(){viewType(dist,type);};})(d,t);tWrap.appendChild(tTitle);
       var fl=document.createElement('div');fl.className='file-list';
       byD[d][t].forEach(function(f){
-        var item=document.createElement('div');item.className='file-item';item.innerHTML='<div class="file-ext">XLS</div><div class="file-info"><div class="file-name">'+eh(f.name)+'</div><div class="file-meta">'+new Date(f.date).toLocaleString('es')+' - '+f.size+' - '+(f.rowCount!=null?f.rowCount:(f.rows?f.rows.length:0))+' filas</div></div>';
+        var item=document.createElement('div');item.className='file-item';item.innerHTML='<div class="file-ext">XLS</div><div class="file-info"><div class="file-name">'+eh(f.name)+'</div><div class="file-meta">'+new Date(f.date).toLocaleString('es')+' - '+f.size+' - '+(f.rowCount!=null?f.rowCount:(f.rows?f.rows.length:0))+' filas</div>'+(f.description?'<div class="file-desc" title="'+eh(f.description)+'">&#9656; '+eh(f.description)+'</div>':'')+'</div>';
         var acts=document.createElement('div');acts.className='file-actions';
+        var eb=document.createElement('button');eb.className='btn btn-primary';eb.innerHTML='&#9998;';eb.title='Editar descripcion (visible al publico)';eb.style.cssText='font-size:10px;padding:4px 8px;';eb.onclick=(function(id,cur,name){return function(){editDesc(id,cur,name);};})(f.fireId,f.description||'',f.name);acts.appendChild(eb);
         var vb=document.createElement('button');vb.className='btn btn-primary';vb.textContent='Ver';vb.style.cssText='font-size:10px;padding:4px 8px;';vb.onclick=(function(dist,type){return function(){viewType(dist,type);};})(d,t);acts.appendChild(vb);
         var db4=document.createElement('button');db4.className='btn btn-danger';db4.textContent='x';db4.onclick=(function(id,name){return function(){delExcel(id,name);};})(f.fireId,f.name);acts.appendChild(db4);
         item.appendChild(acts);fl.appendChild(item);
