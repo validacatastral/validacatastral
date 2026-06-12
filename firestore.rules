@@ -76,10 +76,13 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     // ---------- historial ----------
+    // El log NO es editable (update: false) para conservar su valor de
+    // auditoria. Solo un admin puede borrar entradas (limpieza).
     match /historial/{logId} {
       allow read: if isAdmin();
       allow create: if isStaff();
-      allow update, delete: if false;
+      allow update: if false;
+      allow delete: if isAdmin();
     }
     // ---------- htmlFiles ----------
     match /htmlFiles/{fileId} {
