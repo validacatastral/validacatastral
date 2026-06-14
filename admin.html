@@ -6,8 +6,14 @@
 <title>ValidaCatastral — Admin</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 :root{--bg-void:#07090d;--bg-deep:#0c1015;--bg-panel:#10151c;--bg-card:#151b23;--bg-hover:#1b232d;--border:#23303f;--accent-cyan:#3fc6ee;--accent-blue:#2f9fd0;--accent-purple:#a78bfa;--accent-green:#3fd99a;--accent-amber:#e8b14a;--accent-red:#e87070;--text-prime:#dce4ec;--text-mute:#8da1b3;--text-dim:#5c7186;--font-mono:'Share Tech Mono',monospace;--font-head:'Rajdhani',sans-serif;--font-body:'Inter',system-ui,sans-serif;}
+/* Tono Oscuro-VC: calca la paleta oscura de la vista publica (color + fuentes) */
+html[data-atheme="vcdark"]{--bg-void:#0b0b0c;--bg-deep:#111113;--bg-panel:#151517;--bg-card:#1b1b1e;--bg-hover:#222226;--border:#2a2a2e;--accent-cyan:#5dcaa5;--accent-blue:#3fae89;--accent-purple:#a79bef;--accent-green:#5dcaa5;--accent-amber:#e2b35c;--accent-red:#e07b7b;--text-prime:#ededee;--text-mute:#9a9aa0;--text-dim:#6e6e74;--font-mono:'IBM Plex Mono',ui-monospace,monospace;--font-head:'Inter',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;}
+/* Tono Claro-VC: calca la paleta clara de la vista publica */
+html[data-atheme="vclight"]{--bg-void:#fafafa;--bg-deep:#f1f1f2;--bg-panel:#ffffff;--bg-card:#f5f5f6;--bg-hover:#ececee;--border:#e3e3e6;--accent-cyan:#0f6e56;--accent-blue:#128a68;--accent-purple:#5f51c9;--accent-green:#0f6e56;--accent-amber:#925f0e;--accent-red:#b54a4a;--text-prime:#19191b;--text-mute:#65656c;--text-dim:#9a9aa0;--font-mono:'IBM Plex Mono',ui-monospace,monospace;--font-head:'Inter',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;}
+html[data-atheme="vcdark"] body::before,html[data-atheme="vclight"] body::before{display:none;}
+body{transition:background 0.2s ease,color 0.2s ease;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg-void);color:var(--text-prime);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;}
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(63,198,238,0.012) 2px,rgba(63,198,238,0.012) 4px);pointer-events:none;z-index:9999;}
@@ -210,6 +216,18 @@ body{background:radial-gradient(1200px 600px at 80% -10%,rgba(47,159,208,0.05),t
 :focus-visible{outline:2px solid var(--accent-blue);outline-offset:1px;border-radius:4px;}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
 </style>
+<script>
+(function(){
+  var order=['neon','vcdark','vclight'];
+  var names={neon:'Neon',vcdark:'Oscuro VC',vclight:'Claro VC'};
+  var t=null;try{t=localStorage.getItem('vc-admin-theme');}catch(e){}
+  if(order.indexOf(t)<0)t='neon';
+  document.documentElement.setAttribute('data-atheme',t);
+  function lbl(){var b=document.getElementById('athemeBtn');if(b)b.textContent='\u25D0 '+names[document.documentElement.getAttribute('data-atheme')||'neon'];}
+  window.cycleAdminTheme=function(){var c=document.documentElement.getAttribute('data-atheme')||'neon';var n=order[(order.indexOf(c)+1)%order.length];document.documentElement.setAttribute('data-atheme',n);try{localStorage.setItem('vc-admin-theme',n);}catch(e){}lbl();};
+  if(document.readyState!=='loading')lbl();else document.addEventListener('DOMContentLoaded',lbl);
+})();
+</script>
 </head>
 <body>
 <div class="login-wrap" id="loginScreen">
@@ -235,6 +253,7 @@ body{background:radial-gradient(1200px 600px at 80% -10%,rgba(47,159,208,0.05),t
       <span class="topbar-clock" id="clock">--:--:--</span>
       <div class="topbar-users"><div class="users-dot"></div><span id="usersCount">0</span>&nbsp;en l&#237;nea</div>
       <span class="role-badge role-admin" id="roleBadge">ADMIN</span>
+      <button class="btn" id="athemeBtn" onclick="cycleAdminTheme()" style="font-size:9px;padding:3px 8px;" title="Cambiar tono visual (Neon / Oscuro VC / Claro VC)">&#9680; Tono</button>
       <button class="btn btn-danger" onclick="doLogout()" style="font-size:9px;padding:3px 8px;">SALIR</button>
     </div>
   </div>
@@ -248,6 +267,7 @@ body{background:radial-gradient(1200px 600px at 80% -10%,rgba(47,159,208,0.05),t
       <div class="nav-item admin-only" onclick="goto('htmlAdmin')" id="nav-htmlAdmin">&#10022; Gestor HTML <span class="nav-badge" id="badge-html">0</span></div>
       <div class="nav-label admin-only" style="margin-top:4px;">Sistema</div>
       <div class="nav-item admin-only" onclick="goto('configuracion')" id="nav-configuracion">&#9881; Configuraci&#243;n</div>
+      <div class="nav-item admin-only" onclick="goto('notas')" id="nav-notas">&#9998; Mis notas</div>
       <div class="nav-item admin-only" onclick="goto('usuarios')" id="nav-usuarios">&#9787; Usuarios</div>
       <div class="nav-item master-only" onclick="goto('historial')" id="nav-historial">&#9776; Historial</div>
       <div class="nav-label" style="margin-top:4px;">Links</div>
@@ -365,6 +385,27 @@ body{background:radial-gradient(1200px 600px at 80% -10%,rgba(47,159,208,0.05),t
             <div class="config-list" id="categoriasLista"></div>
           </div>
         </div>
+        <div class="panel-card">
+          <div class="panel-title">&#128279; Recursos de consulta <span style="font-family:var(--font-body);font-weight:400;font-size:10px;color:var(--text-dim);letter-spacing:0;text-transform:none;">&middot; enlaces que ver&#225;n los revisores en la vista p&#250;blica</span></div>
+          <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+            <input type="text" id="newRecNombre" placeholder="Nombre (ej. Tabla CIIU oficial)" style="flex:1;min-width:160px;">
+            <input type="url" id="newRecUrl" placeholder="https://... (enlace o archivo en Drive)" style="flex:2;min-width:200px;">
+            <button class="btn btn-success" onclick="addRecurso()">&#10133; Agregar</button>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-bottom:10px;letter-spacing:0.5px;">SUGERENCIA: sube el archivo a Google Drive (o similar) y pega aqu&#237; el enlace. No subas archivos pesados a Firebase.</div>
+          <div class="config-list" id="recursosLista"></div>
+        </div>
+      </div>
+      <div class="view admin-only" id="view-notas">
+        <div class="page-header"><h1>&#9998; <span>Mis notas</span></h1><p>Privadas &middot; guardadas en la nube &middot; te siguen en cualquier equipo</p></div>
+        <div class="panel-card">
+          <div class="panel-title">&#9998; Bloc de notas</div>
+          <textarea id="notasTxt" oninput="notesChanged()" placeholder="Escribe aqu&#237; tus apuntes, pendientes, recordatorios..." style="width:100%;min-height:340px;resize:vertical;font-family:var(--font-body);font-size:13px;line-height:1.65;background:var(--bg-card);color:var(--text-prime);border:1px solid var(--border);border-radius:8px;padding:12px;"></textarea>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:10px;">
+            <button class="btn btn-success" onclick="saveNotes()">&#128190; Guardar</button>
+            <span id="notasMeta" style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:0.5px;">&mdash;</span>
+          </div>
+        </div>
       </div>
       <div class="view admin-only" id="view-usuarios">
         <div class="page-header"><h1>&#9787; <span>Usuarios</span></h1><p>Gesti&#243;n de accesos y roles</p></div>
@@ -417,7 +458,7 @@ const auth=getAuth(app);
 const MAIL='@validacatastral.com';
 var CU=null,CR=null;
 var RPP=50;
-var S={excelFiles:[],htmlFiles:[],reviews:{},dbUsers:{},presence:{},historial:[],curType:null,curDist:null,page:1,sort:{col:-1,dir:1},colFilters:{},rows:[],headers:[],distritos:[],categorias:[],histF:''};
+var S={excelFiles:[],htmlFiles:[],reviews:{},dbUsers:{},presence:{},historial:[],curType:null,curDist:null,page:1,sort:{col:-1,dir:1},colFilters:{},rows:[],headers:[],distritos:[],categorias:[],recursos:[],histF:'',notesDirty:false};
 var DD=null;var dbLoaded=false;
 
 function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
@@ -429,8 +470,8 @@ async function rmP(){if(PID)try{await deleteDoc(doc(db,'presence',PID));}catch(e
 onSnapshot(collection(db,'presence'),function(sn){var cut=Date.now()-270000,c=0;S.presence={};sn.forEach(function(d){var dd=d.data();if((dd.ts||0)>cut){c++;S.presence[d.id]=dd;}});document.getElementById('usersCount').textContent=c;updateProgress();});
 window.addEventListener('beforeunload',rmP);
 
-onSnapshot(doc(db,'config','settings'),function(sn){if(sn.exists()){var d=sn.data();S.distritos=d.distritos||['Comas','Independencia'];S.categorias=d.categorias||['CRC','Anos','Tipo de Interior','Usos','Condicion de Titularidad'];}else{S.distritos=['Comas','Independencia'];S.categorias=['CRC','Anos','Tipo de Interior','Usos','Condicion de Titularidad'];saveCfg();}updateSelects();renderCfgLists();});
-async function saveCfg(){try{await setDoc(doc(db,'config','settings'),{distritos:S.distritos,categorias:S.categorias});}catch(e){}}
+onSnapshot(doc(db,'config','settings'),function(sn){if(sn.exists()){var d=sn.data();S.distritos=d.distritos||['Comas','Independencia'];S.categorias=d.categorias||['CRC','Anos','Tipo de Interior','Usos','Condicion de Titularidad'];S.recursos=Array.isArray(d.recursos)?d.recursos:[];}else{S.distritos=['Comas','Independencia'];S.categorias=['CRC','Anos','Tipo de Interior','Usos','Condicion de Titularidad'];S.recursos=[];saveCfg();}updateSelects();renderCfgLists();});
+async function saveCfg(){try{await setDoc(doc(db,'config','settings'),{distritos:S.distritos,categorias:S.categorias,recursos:S.recursos});}catch(e){}}
 
 function updateSelects(){
   var ds='<option value="">-- Distrito --</option>'+S.distritos.map(function(d){return'<option value="'+eh(d)+'">'+eh(d)+'</option>';}).join('');
@@ -446,7 +487,32 @@ function renderCfgLists(){
   if(dl){dl.innerHTML='';if(!S.distritos.length){dl.innerHTML='<div class="empty-state" style="padding:10px;">Sin distritos</div>';}else{S.distritos.forEach(function(d){var el=document.createElement('div');el.className='config-item';el.innerHTML='<span>'+eh(d)+'</span>';var b=document.createElement('button');b.className='btn btn-danger';b.textContent='x';b.onclick=(function(val){return function(){removeDistrito(val);};})(d);el.appendChild(b);dl.appendChild(el);});}}
   var cl=document.getElementById('categoriasLista');
   if(cl){cl.innerHTML='';if(!S.categorias.length){cl.innerHTML='<div class="empty-state" style="padding:10px;">Sin categorias</div>';}else{S.categorias.forEach(function(c){var el=document.createElement('div');el.className='config-item';el.innerHTML='<span>'+eh(c)+'</span>';var b=document.createElement('button');b.className='btn btn-danger';b.textContent='x';b.onclick=(function(val){return function(){removeCategoria(val);};})(c);el.appendChild(b);cl.appendChild(el);});}}
+  renderRecursosLista();
 }
+function renderRecursosLista(){
+  var rl=document.getElementById('recursosLista');if(!rl)return;
+  rl.innerHTML='';
+  if(!S.recursos.length){rl.innerHTML='<div class="empty-state" style="padding:10px;">Sin recursos. Agrega enlaces de consulta arriba.</div>';return;}
+  S.recursos.forEach(function(it,i){
+    var el=document.createElement('div');el.className='config-item';
+    var span=document.createElement('span');span.style.cssText='display:flex;flex-direction:column;gap:1px;overflow:hidden;';
+    var nm=document.createElement('b');nm.style.cssText='font-weight:600;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';nm.textContent=it.nombre||it.url;
+    var u=document.createElement('a');u.href=it.url;u.target='_blank';u.rel='noopener noreferrer';u.textContent=it.url;u.style.cssText='font-family:var(--font-mono);font-size:9px;color:var(--accent-cyan);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none;';
+    span.appendChild(nm);span.appendChild(u);el.appendChild(span);
+    var b=document.createElement('button');b.className='btn btn-danger';b.textContent='x';b.onclick=(function(idx){return function(){removeRecurso(idx);};})(i);el.appendChild(b);
+    rl.appendChild(el);
+  });
+}
+window.addRecurso=function(){
+  var n=document.getElementById('newRecNombre').value.trim();var u=document.getElementById('newRecUrl').value.trim();
+  if(!u){toast('Pega el enlace (URL)','var(--accent-amber)');return;}
+  if(!/^https?:\/\//i.test(u)){toast('El enlace debe empezar con http:// o https://','var(--accent-amber)');return;}
+  if(!n)n=u;
+  S.recursos.push({nombre:n.slice(0,120),url:u});
+  document.getElementById('newRecNombre').value='';document.getElementById('newRecUrl').value='';
+  saveCfg();logH('CONFIG_REC','Agrego recurso: '+n.slice(0,60));toast('Recurso agregado','var(--accent-green)');
+};
+window.removeRecurso=function(i){if(!S.recursos[i])return;if(!confirm('Eliminar el recurso "'+(S.recursos[i].nombre||S.recursos[i].url)+'"?'))return;var nm=S.recursos[i].nombre||S.recursos[i].url;S.recursos.splice(i,1);saveCfg();logH('CONFIG_REC','Elimino recurso: '+String(nm).slice(0,60));};
 
 window.addDistrito=function(){var v=document.getElementById('newDistrito').value.trim();if(!v||S.distritos.indexOf(v)>=0){toast(v?'Ya existe':'Escribe un nombre','var(--accent-amber)');return;}S.distritos.push(v);document.getElementById('newDistrito').value='';saveCfg();toast('Distrito agregado: '+v,'var(--accent-green)');};
 window.removeDistrito=function(d){if(!confirm('Eliminar distrito "'+d+'"?'))return;S.distritos=S.distritos.filter(function(x){return x!==d;});saveCfg();};
@@ -496,8 +562,37 @@ function startListeners(){
   onSnapshot(query(collection(db,'htmlFiles'),orderBy('date','desc')),function(sn){S.htmlFiles=[];sn.forEach(function(d){S.htmlFiles.push(Object.assign({},d.data(),{fireId:d.id}));});renderHtmlList();document.getElementById('badge-html').textContent=S.htmlFiles.length;document.getElementById('html-count').textContent=S.htmlFiles.length;});
   onSnapshot(collection(db,'reviews'),function(sn){S.reviews={};sn.forEach(function(d){S.reviews[d.id]=d.data();});updateProgress();renderComments();if(S.curType)renderAdminTable();});
   if(CR==='admin')onSnapshot(query(collection(db,'historial'),orderBy('date','desc')),function(sn){S.historial=[];sn.forEach(function(d){S.historial.push(Object.assign({},d.data(),{fireId:d.id}));});renderHistorial();renderMatrix();});
+  if(CR==='admin')setupNotes();
 }
 async function logH(t,m){try{await addDoc(collection(db,'historial'),{type:t,msg:m,user:CU,role:CR,date:new Date().toISOString()});}catch(e){}}
+
+// MIS NOTAS (privadas por admin, guardadas en Firebase)
+var _notesTimer=null;
+function fmtNoteDate(iso){try{return new Date(iso).toLocaleString('es',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});}catch(e){return'';}}
+function updateNotesMeta(iso){var m=document.getElementById('notasMeta');if(!m)return;m.textContent=iso?('Guardado: '+fmtNoteDate(iso)):'A\u00FAn sin guardar';}
+function setupNotes(){
+  var uid=auth.currentUser&&auth.currentUser.uid;if(!uid)return;
+  onSnapshot(doc(db,'adminNotes',uid),function(sn){
+    if(S.notesDirty)return;
+    var ta=document.getElementById('notasTxt');if(!ta)return;
+    var txt=sn.exists()?(sn.data().text||''):'';
+    if(ta.value!==txt)ta.value=txt;
+    updateNotesMeta(sn.exists()?sn.data().updatedAt:null);
+  });
+}
+window.notesChanged=function(){
+  S.notesDirty=true;
+  var m=document.getElementById('notasMeta');if(m)m.textContent='Sin guardar\u2026';
+  clearTimeout(_notesTimer);_notesTimer=setTimeout(function(){saveNotes();},1500);
+};
+window.saveNotes=async function(){
+  var uid=auth.currentUser&&auth.currentUser.uid;if(!uid)return;
+  clearTimeout(_notesTimer);
+  var ta=document.getElementById('notasTxt');if(!ta)return;
+  var txt=ta.value.slice(0,20000);var iso=new Date().toISOString();
+  try{await setDoc(doc(db,'adminNotes',uid),{text:txt,updatedAt:iso});S.notesDirty=false;updateNotesMeta(iso);toast('Notas guardadas','var(--accent-green)');}
+  catch(e){toast('Error al guardar notas: '+e.message,'var(--accent-red)');}
+};
 
 function renderHistorial(){
   var el=document.getElementById('historialList');if(!el)return;

@@ -88,6 +88,16 @@ service cloud.firestore {
     match /htmlFiles/{fileId} {
       allow read, write: if isStaff();
     }
+    // ---------- adminNotes (notas privadas: cada admin solo las suyas) ----------
+    match /adminNotes/{uid} {
+      allow read:   if isAdmin() && request.auth.uid == uid;
+      allow delete: if isAdmin() && request.auth.uid == uid;
+      allow create, update: if isAdmin()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['text', 'updatedAt'])
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 20000;
+    }
     // ---------- todo lo demas: denegado ----------
     match /{document=**} {
       allow read, write: if false;
