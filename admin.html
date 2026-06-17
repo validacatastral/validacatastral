@@ -217,6 +217,19 @@ body{background:radial-gradient(1200px 600px at 80% -10%,rgba(47,159,208,0.05),t
 .file-desc{font-size:10px;color:var(--accent-cyan);opacity:0.85;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:italic;}
 :focus-visible{outline:2px solid var(--accent-blue);outline-offset:1px;border-radius:4px;}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+/* === Arreglos Claro VC: neutraliza oscuros incrustados (no toca Neon ni Oscuro VC) === */
+html[data-atheme="vclight"] .topbar{background:rgba(255,255,255,0.92);box-shadow:0 1px 0 var(--border);}
+html[data-atheme="vclight"] .sidebar{background:var(--bg-deep);}
+html[data-atheme="vclight"] .panel-card,
+html[data-atheme="vclight"] .stat-card,
+html[data-atheme="vclight"] .progress-card,
+html[data-atheme="vclight"] .user-card,
+html[data-atheme="vclight"] .file-item,
+html[data-atheme="vclight"] .hist-item,
+html[data-atheme="vclight"] .comment-item{background:var(--bg-card);box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+html[data-atheme="vclight"] .filter-dropdown{background:var(--bg-panel);box-shadow:0 8px 24px rgba(0,0,0,0.12);}
+html[data-atheme="vclight"] .login-card{box-shadow:0 4px 24px rgba(0,0,0,0.10);}
+html[data-atheme="vclight"] .toast-msg{box-shadow:0 2px 12px rgba(0,0,0,0.12);}
 </style>
 <script>
 (function(){
