@@ -358,7 +358,7 @@ html[data-atheme="vclight"] .toast-msg{box-shadow:0 2px 12px rgba(0,0,0,0.12);}
           <input type="file" id="excelUpload" accept=".xlsx,.xls" multiple onchange="uploadExcel(event)">
         </div>
         <div class="panel-card">
-          <div class="panel-title">&#9703; Archivos en la nube <span class="nav-badge" id="excel-count2">0</span></div>
+          <div class="panel-title">&#9703; Archivos en la nube <span class="nav-badge" id="excel-count2">0</span><button class="btn btn-primary" onclick="cleanOrphanReviews()" title="Borra revisiones que ya no corresponden a ninguna fila vigente (corrige porcentajes inflados como 667%)" style="float:right;font-size:10px;padding:4px 10px;">&#9851; Limpiar hu&#233;rfanas</button></div>
           <div id="excelFileList"><div class="empty-state">No hay archivos a&#250;n.</div></div>
         </div>
         <div class="panel-card" id="adminTablePanel" style="display:none;">
@@ -683,7 +683,38 @@ window.uploadHtml=function(e){
   Array.from(e.target.files).forEach(function(file){var r=new FileReader();r.onload=async function(ev){try{var b64=btoa(unescape(encodeURIComponent(ev.target.result)));await addDoc(collection(db,'htmlFiles'),{name:file.name,distrito:dist,date:new Date().toISOString(),size:(file.size/1024).toFixed(1)+'KB',contentB64:b64,uploadedBy:CU});logH('HTML_UPLOAD','Subio HTML: '+file.name+' ('+dist+')');toast('Guardado: '+file.name,'var(--accent-purple)');}catch(err){toast('Error: '+err.message,'var(--accent-red)');}};r.readAsText(file,'UTF-8');});e.target.value='';
 };
 
-window.delExcel=async function(id,name){if(!confirm('Eliminar '+name+'?'))return;try{var sn2=await getDocs(collection(db,'excelFiles',id,'chunks'));for(const d2 of sn2.docs){await deleteDoc(d2.ref);}await deleteDoc(doc(db,'excelFiles',id));logH('EXCEL_DELETE','Elimino: '+name);toast('Eliminado','var(--accent-amber)');}catch(e){toast('Error: '+e.message,'var(--accent-red)');}};
+window.delExcel=async function(id,name){if(!confirm('Eliminar '+name+'?'))return;try{
+  var f=S.excelFiles.find(function(x){return x.fireId===id;});
+  var orphanKeys=[];
+  if(f){try{
+    var myRows=await loadRowsFor(f);var tk=(f.distrito||'')+'_'+(f.type||'');var hdr=f.headers||(myRows[0]?Object.keys(myRows[0]):[]);
+    var mine=new Set();myRows.forEach(function(r){mine.add(makeKey(tk,r,hdr));});
+    var others=new Set();var sibs=S.excelFiles.filter(function(x){return x.fireId!==id&&x.distrito===f.distrito&&x.type===f.type;});
+    for(const s of sibs){var sr=await loadRowsFor(s);var sh=s.headers||(sr[0]?Object.keys(sr[0]):[]);sr.forEach(function(r){others.add(makeKey(tk,r,sh));});}
+    mine.forEach(function(k){if(!others.has(k)&&S.reviews[k])orphanKeys.push(k);});
+  }catch(e){orphanKeys=[];}}
+  var sn2=await getDocs(collection(db,'excelFiles',id,'chunks'));for(const d2 of sn2.docs){await deleteDoc(d2.ref);}await deleteDoc(doc(db,'excelFiles',id));
+  var rOk=0;for(const k of orphanKeys){try{await deleteDoc(doc(db,'reviews',k));rOk++;}catch(e){}}
+  logH('EXCEL_DELETE','Elimino: '+name+(rOk?(' (+'+rOk+' revisiones)'):''));toast('Eliminado'+(rOk?(' (+'+rOk+' revisiones)'):''),'var(--accent-amber)');
+}catch(e){toast('Error: '+e.message,'var(--accent-red)');}};
+async function vcBuildValidKeys(){var valid={},failed={};for(const f of S.excelFiles){var grp=(f.distrito||'Sin Distrito')+'|||'+(f.type||'Sin Categoria');if(!valid[grp])valid[grp]=new Set();try{var rows=await loadRowsFor(f);var hdr=f.headers||(rows[0]?Object.keys(rows[0]):[]);var tk=(f.distrito||'')+'_'+(f.type||'');rows.forEach(function(r){valid[grp].add(makeKey(tk,r,hdr));});}catch(e){failed[grp]=true;}}return{valid:valid,failed:failed};}
+window.cleanOrphanReviews=async function(){
+  if(CR!=='admin'){toast('Solo el admin puede limpiar','var(--accent-red)');return;}
+  if(!Object.keys(S.reviews).length){toast('No hay revisiones que revisar','var(--accent-blue)');return;}
+  toast('Analizando filas vigentes...','var(--accent-blue)');
+  var res;try{res=await vcBuildValidKeys();}catch(e){toast('Error al leer filas: '+e.message,'var(--accent-red)');return;}
+  var valid=res.valid,failed=res.failed,orphans=[];
+  Object.keys(S.reviews).forEach(function(rk){var rev=S.reviews[rk];var grp=(rev.distrito||'Sin Distrito')+'|||'+(rev.tipo||rev.type||'Sin Categoria');if(failed[grp])return;var set=valid[grp];if(!set){orphans.push(rk);return;}if(!set.has(rk))orphans.push(rk);});
+  if(!orphans.length){toast('No hay revisiones hu\u00e9rfanas \u2014 todo limpio','var(--accent-green)');return;}
+  var nFail=Object.keys(failed).length;
+  var msg='Se encontraron '+orphans.length+' revisi\u00f3n(es) hu\u00e9rfana(s): no corresponden a ninguna fila vigente (sobran de archivos viejos o reemplazados).\n\nSe borrar\u00e1n de forma PERMANENTE. Esto corrige los porcentajes inflados.';
+  if(nFail)msg+='\n\nNOTA: '+nFail+' categor\u00eda(s) no se pudieron leer y se OMITIERON por seguridad (no se toca ninguna de sus revisiones).';
+  if(!confirm(msg+'\n\n\u00bfContinuar?'))return;
+  toast('Borrando '+orphans.length+' hu\u00e9rfanas...','var(--accent-blue)');
+  var ok=0,err=0;for(const rk of orphans){try{await deleteDoc(doc(db,'reviews',rk));ok++;}catch(e){err++;}}
+  logH('REVIEW_DELETE','Limpieza de hu\u00e9rfanas: '+ok+' borradas'+(err?(', '+err+' con error'):''));
+  toast('Listo: '+ok+' hu\u00e9rfanas borradas'+(err?(' \u00b7 '+err+' fallaron'):'')+'. Los % ya quedan reales.','var(--accent-green)');
+};
 window.editDesc=async function(id,cur,name){
   var v=prompt('Descripcion del archivo (max 200 caracteres, visible en la vista publica).\nDeja vacio para quitarla.',cur||'');
   if(v===null)return;v=v.trim().slice(0,200);
@@ -813,6 +844,7 @@ function updateProgress(){
   var types={};
   S.excelFiles.forEach(function(f){var key=(f.distrito||'Sin Distrito')+'|||'+(f.type||'Sin Categoria');if(!types[key])types[key]={distrito:f.distrito||'Sin Distrito',type:f.type||'Sin Categoria',total:0,done:0,startDate:f.date,lastDone:null,reviewers:new Set()};if(f.date<types[key].startDate)types[key].startDate=f.date;types[key].total+=(f.rowCount!=null?f.rowCount:(f.rows?f.rows.length:0));});
   Object.keys(S.reviews).forEach(function(rk){var rev=S.reviews[rk];if(!rev||!rev.done)return;var key=(rev.distrito||'Sin Distrito')+'|||'+(rev.tipo||rev.type||'Sin Categoria');var t=types[key];if(!t)return;t.done++;if(!t.lastDone||rev.doneDate>t.lastDone)t.lastDone=rev.doneDate;if(rev.doneBy)t.reviewers.add(rev.doneBy);});
+  Object.keys(types).forEach(function(k){if(types[k].done>types[k].total)types[k].done=types[k].total;});
   var ks=Object.keys(types),tA=ks.reduce(function(s,t){return s+types[t].total;},0),dA=ks.reduce(function(s,t){return s+types[t].done;},0),pA=tA?Math.round(dA/tA*100):0,tc=Object.values(S.reviews).filter(function(r){return r.comment&&r.comment.trim();}).length;
   document.getElementById('d-excel').textContent=S.excelFiles.length;document.getElementById('d-revisadas').textContent=dA;document.getElementById('d-comentarios').textContent=tc;document.getElementById('d-pct').textContent=pA+'%';document.getElementById('badge-pct').textContent=pA+'%';
   var nd={};S.excelFiles.forEach(function(f){nd[f.distrito||'?']=true;});
