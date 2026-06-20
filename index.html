@@ -640,7 +640,7 @@ window.dlExcel=function(){
 };
 
 function makeKey(tk,row,headers){var k=(tk+'__'+headers.slice(0,3).map(function(h){return String(row[h]!=null?row[h]:'');}).join('_')).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,100);return k||('row_'+Math.random().toString(36).slice(2));}
-function eh(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function eh(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 function hlText(s,q){var es=eh(s),eq=eh(q).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');try{return es.replace(new RegExp(eq,'gi'),function(m){return '<mark>'+m+'</mark>';});}catch(e){return es;}}
 window.setDen=function(v){
   var d=!!+v;S.dense=d;
@@ -666,7 +666,7 @@ function renderRec(){
   if(!items.length){el.innerHTML='<div class="recempty">El administrador a&uacute;n no agreg&oacute; enlaces de consulta.</div>';return;}
   el.innerHTML='';
   items.forEach(function(it){
-    var a=document.createElement('a');a.className='reci';a.href=String(it.url);a.target='_blank';a.rel='noopener noreferrer';
+    var a=document.createElement('a');a.className='reci';var _ru=String(it.url);a.href=/^https?:\/\//i.test(_ru)?_ru:'#';a.target='_blank';a.rel='noopener noreferrer';
     a.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/></svg>';
     var nm=document.createElement('span');nm.className='rnm';nm.textContent=it.nombre||it.url;a.appendChild(nm);
     var ex=document.createElement('span');ex.className='rext';ex.innerHTML='&#8599;';a.appendChild(ex);

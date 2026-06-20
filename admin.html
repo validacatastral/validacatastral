@@ -1053,7 +1053,7 @@ function renderExcelFileList(){
 window.goto=function(id){document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});var v=document.getElementById('view-'+id),n=document.getElementById('nav-'+id);if(v)v.classList.add('active');if(n)n.classList.add('active');};
 window.copyPublicLink=function(){var url=window.location.href.replace('admin.html','index.html');navigator.clipboard.writeText(url).then(function(){toast('Link publico copiado','var(--accent-green)');}).catch(function(){toast('Link: '+url,'var(--accent-blue)');});};
 function makeKey(tk,row,headers){var key=(tk+'__'+headers.slice(0,3).map(function(h){return String(row[h]!=null?row[h]:'');}).join('_')).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,100);return key||('row_'+Math.random().toString(36).slice(2));}
-function eh(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function eh(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
 window.toast=function(msg,color){var d=document.createElement('div');d.className='toast-msg';d.style.borderColor=color||'var(--accent-blue)';d.textContent=msg;document.getElementById('toast').appendChild(d);setTimeout(function(){d.remove();},4000);};
 </script>
 </body>
