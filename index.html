@@ -336,7 +336,7 @@ const cfg={apiKey:"AIzaSyBrTT-bK_UTZLSg6BVMiVviIQmAYFbGo9Q",authDomain:"dataforg
 const app=initializeApp(cfg);
 // App Check: protege Firestore para que solo esta web pueda escribir.
 // La clave de sitio reCAPTCHA v3 es publica (puede ir en el repo).
-const RECAPTCHA_SITE_KEY="6Le42RktAAAAAFZI91BJDPkLWMbgbB72eZjuID2J";
+const RECAPTCHA_SITE_KEY="6LfXWiotAAAAAJkUjVREaZ0OGJ007YSqm3R74ImI";
 try{initializeAppCheck(app,{provider:new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),isTokenAutoRefreshEnabled:true});}catch(e){console.warn('appcheck',e);}
 const db=getFirestore(app);
 const auth=getAuth(app);
