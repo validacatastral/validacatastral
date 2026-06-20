@@ -88,13 +88,22 @@ service cloud.firestore {
     match /htmlFiles/{fileId} {
       allow read, write: if isStaff();
     }
-    // ---------- adminNotes (notas privadas: cada admin solo las suyas) ----------
+    // ---------- adminNotes (nota personal de cada usuario registrado) ----------
+    // Cada staff lee/escribe SOLO la suya; el admin (maestro) puede leer las de todos.
     match /adminNotes/{uid} {
-      allow read:   if isAdmin() && request.auth.uid == uid;
-      allow delete: if isAdmin() && request.auth.uid == uid;
-      allow create, update: if isAdmin()
+      allow read:   if isStaff() && (request.auth.uid == uid || isAdmin());
+      allow delete: if isStaff() && request.auth.uid == uid;
+      allow create, update: if isStaff()
         && request.auth.uid == uid
         && request.resource.data.keys().hasOnly(['text', 'updatedAt'])
+        && request.resource.data.text is string
+        && request.resource.data.text.size() <= 20000;
+    }
+    // ---------- sharedNotes/general (tablon del equipo: admin publica, staff lee) ----------
+    match /sharedNotes/general {
+      allow read:  if isStaff();
+      allow write: if isAdmin()
+        && request.resource.data.keys().hasOnly(['text', 'updatedAt', 'updatedBy'])
         && request.resource.data.text is string
         && request.resource.data.text.size() <= 20000;
     }

@@ -9,11 +9,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
-:root{--bg-void:#07090d;--bg-deep:#0c1015;--bg-panel:#10151c;--bg-card:#151b23;--bg-hover:#1b232d;--border:#23303f;--accent-cyan:#3fc6ee;--accent-blue:#2f9fd0;--accent-purple:#a78bfa;--accent-green:#3fd99a;--accent-amber:#e8b14a;--accent-red:#e87070;--text-prime:#dce4ec;--text-mute:#8da1b3;--text-dim:#5c7186;--font-mono:'Share Tech Mono',monospace;--font-head:'Rajdhani',sans-serif;--font-body:'Inter',system-ui,sans-serif;}
+:root{--bg-void:#07090d;--bg-deep:#0c1015;--bg-panel:#10151c;--bg-card:#151b23;--bg-hover:#1b232d;--border:#23303f;--accent-cyan:#3fc6ee;--accent-blue:#2f9fd0;--accent-purple:#a78bfa;--accent-green:#3fd99a;--accent-amber:#e8b14a;--accent-red:#e87070;--text-prime:#dce4ec;--text-mute:#9fb3c4;--text-dim:#5c7186;--font-mono:'Share Tech Mono',monospace;--font-head:'Rajdhani',sans-serif;--font-body:'Inter',system-ui,sans-serif;}
 /* Tono Oscuro-VC: calca la paleta oscura de la vista publica (color + fuentes) */
-html[data-atheme="vcdark"]{--bg-void:#0b0b0c;--bg-deep:#111113;--bg-panel:#151517;--bg-card:#1b1b1e;--bg-hover:#222226;--border:#2a2a2e;--accent-cyan:#5dcaa5;--accent-blue:#3fae89;--accent-purple:#a79bef;--accent-green:#5dcaa5;--accent-amber:#e2b35c;--accent-red:#e07b7b;--text-prime:#ededee;--text-mute:#9a9aa0;--text-dim:#6e6e74;--font-mono:'IBM Plex Mono',ui-monospace,monospace;--font-head:'Inter',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;}
+html[data-atheme="vcdark"]{--bg-void:#0b0b0c;--bg-deep:#111113;--bg-panel:#151517;--bg-card:#1b1b1e;--bg-hover:#222226;--border:#2a2a2e;--accent-cyan:#5dcaa5;--accent-blue:#3fae89;--accent-purple:#a79bef;--accent-green:#5dcaa5;--accent-amber:#e2b35c;--accent-red:#e07b7b;--text-prime:#ededee;--text-mute:#a6a6ac;--text-dim:#6e6e74;--font-mono:'IBM Plex Mono',ui-monospace,monospace;--font-head:'Inter',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;}
 /* Tono Claro-VC: calca la paleta clara de la vista publica */
-html[data-atheme="vclight"]{--bg-void:#fafafa;--bg-deep:#f1f1f2;--bg-panel:#ffffff;--bg-card:#f5f5f6;--bg-hover:#ececee;--border:#e3e3e6;--accent-cyan:#0f6e56;--accent-blue:#128a68;--accent-purple:#5f51c9;--accent-green:#0f6e56;--accent-amber:#925f0e;--accent-red:#b54a4a;--text-prime:#19191b;--text-mute:#65656c;--text-dim:#9a9aa0;--font-mono:'IBM Plex Mono',ui-monospace,monospace;--font-head:'Inter',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;}
+html[data-atheme="vclight"]{--bg-void:#fafafa;--bg-deep:#f1f1f2;--bg-panel:#ffffff;--bg-card:#f5f5f6;--bg-hover:#ececee;--border:#e3e3e6;--accent-cyan:#0f6e56;--accent-blue:#128a68;--accent-purple:#5f51c9;--accent-green:#0f6e56;--accent-amber:#925f0e;--accent-red:#b54a4a;--text-prime:#19191b;--text-mute:#56565d;--text-dim:#9a9aa0;--font-mono:'IBM Plex Mono',ui-monospace,monospace;--font-head:'Inter',system-ui,sans-serif;--font-body:'Inter',system-ui,sans-serif;}
 html[data-atheme="vcdark"] body::before,html[data-atheme="vclight"] body::before{display:none;}
 body{transition:background 0.2s ease,color 0.2s ease;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -230,6 +230,68 @@ html[data-atheme="vclight"] .comment-item{background:var(--bg-card);box-shadow:0
 html[data-atheme="vclight"] .filter-dropdown{background:var(--bg-panel);box-shadow:0 8px 24px rgba(0,0,0,0.12);}
 html[data-atheme="vclight"] .login-card{box-shadow:0 4px 24px rgba(0,0,0,0.10);}
 html[data-atheme="vclight"] .toast-msg{box-shadow:0 2px 12px rgba(0,0,0,0.12);}
+
+/* === Refinamiento visual: degradado + profundidad (sin glow en iconos) === */
+.stat-card,.panel-card,.progress-card{
+  background-image:linear-gradient(157deg,rgba(255,255,255,0.025),rgba(0,0,0,0.06));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05),0 6px 18px rgba(0,0,0,0.16);
+}
+.stat-card::before{height:3px;}
+.stat-card.blue{background-color:color-mix(in srgb,var(--accent-blue) 6%,var(--bg-card));}
+.stat-card.green{background-color:color-mix(in srgb,var(--accent-green) 6%,var(--bg-card));}
+.stat-card.amber{background-color:color-mix(in srgb,var(--accent-amber) 6%,var(--bg-card));}
+.stat-card.purple{background-color:color-mix(in srgb,var(--accent-purple) 6%,var(--bg-card));}
+html[data-atheme="vclight"] .stat-card,html[data-atheme="vclight"] .panel-card,html[data-atheme="vclight"] .progress-card{
+  background-image:linear-gradient(157deg,rgba(255,255,255,0.7),rgba(0,0,0,0.012));
+  box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* === Secciones de notas (Mis notas / Tablon general / Notas del equipo) === */
+.note-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.note-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.note-ico.cy{background:color-mix(in srgb,var(--accent-cyan) 16%,transparent);color:var(--accent-cyan);}
+.note-ico.am{background:color-mix(in srgb,var(--accent-amber) 18%,transparent);color:var(--accent-amber);}
+.note-ico.pu{background:color-mix(in srgb,var(--accent-purple) 16%,transparent);color:var(--accent-purple);}
+.note-htitle{font-family:var(--font-head);font-size:14px;font-weight:700;letter-spacing:0.5px;color:var(--text-prime);}
+.note-hsub{font-family:var(--font-mono);font-size:10px;color:var(--text-mute);letter-spacing:0.5px;}
+.note-tag{font-family:var(--font-mono);font-size:9px;letter-spacing:1px;padding:2px 8px;border-radius:10px;margin-left:8px;vertical-align:middle;}
+.note-tag.edit{background:color-mix(in srgb,var(--accent-purple) 14%,transparent);color:var(--accent-purple);border:1px solid color-mix(in srgb,var(--accent-purple) 35%,transparent);}
+.note-tag.ro{background:color-mix(in srgb,var(--accent-cyan) 12%,transparent);color:var(--accent-cyan);border:1px solid color-mix(in srgb,var(--accent-cyan) 30%,transparent);}
+.note-ro{background:var(--bg-deep);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;line-height:1.6;color:var(--text-prime);white-space:pre-wrap;min-height:60px;}
+.team-list{display:flex;flex-direction:column;gap:9px;}
+.team-row{background:var(--bg-deep);border:1px solid var(--border);border-radius:9px;padding:11px 13px;}
+.team-top{display:flex;align-items:center;gap:9px;margin-bottom:6px;}
+.team-av{width:26px;height:26px;border-radius:50%;background:color-mix(in srgb,var(--accent-blue) 16%,transparent);color:var(--accent-blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.team-name{font-size:12px;font-weight:600;color:var(--text-prime);}
+.team-role{font-family:var(--font-mono);font-size:8px;color:var(--text-mute);letter-spacing:1px;text-transform:uppercase;}
+.team-date{margin-left:auto;font-family:var(--font-mono);font-size:9px;color:var(--text-dim);}
+.team-text{font-size:12px;color:var(--text-mute);line-height:1.55;white-space:pre-wrap;}
+.team-empty-note{font-size:11px;color:var(--text-dim);font-style:italic;}
+
+/* === Vista movil / tablet: barra lateral como cajon (drawer) === */
+.hamb-btn{display:none;background:transparent;border:1px solid var(--border);border-radius:7px;color:var(--accent-cyan);width:34px;height:34px;font-size:16px;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;}
+.nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:90;}
+@media(max-width:820px){
+  .hamb-btn{display:inline-flex;}
+  .topbar{padding:0 12px;gap:8px;}
+  .topbar-logo-text{font-size:14px;}
+  .topbar-clock{display:none;}
+  .sidebar{position:fixed;top:56px;bottom:0;left:0;z-index:95;transform:translateX(-105%);transition:transform 0.28s ease;box-shadow:8px 0 30px rgba(0,0,0,0.5);}
+  body.nav-open .sidebar{transform:translateX(0);}
+  body.nav-open .nav-backdrop{display:block;}
+  .main{padding:16px 14px;}
+  .cards-grid{grid-template-columns:1fr 1fr!important;}
+  .mx-cols,.mx-cols2{grid-template-columns:1fr;}
+}
+@media(max-width:560px){
+  .cards-grid{grid-template-columns:1fr 1fr!important;}
+  .topbar-users{display:none;}
+  /* tablas y listas: apilar en tarjetas */
+  .table-wrap{border:none;}
+  .mxd-row{grid-template-columns:1fr;gap:4px;}
+  .mxd-pct{text-align:left;}
+  .file-item,.mxf-item,.mxa-item{flex-wrap:wrap;}
+}
 </style>
 <script>
 (function(){
@@ -260,6 +322,7 @@ html[data-atheme="vclight"] .toast-msg{box-shadow:0 2px 12px rgba(0,0,0,0.12);}
 </div>
 <div id="appWrap" style="display:none;flex-direction:column;min-height:100vh;">
   <div class="topbar">
+    <button class="hamb-btn" onclick="toggleNav()" title="Men&#250;" aria-label="Men&#250;">&#9776;</button>
     <div class="topbar-logo">
       <img src="data:image/png;base64,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" alt="ValidaCatastral">
       <span class="topbar-logo-text">VALIDA CATASTRAL <small id="roleLabel">// ADMIN</small></span>
@@ -273,16 +336,20 @@ html[data-atheme="vclight"] .toast-msg{box-shadow:0 2px 12px rgba(0,0,0,0.12);}
     </div>
   </div>
   <div class="app-body">
-    <nav class="sidebar">
+    <div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
+    <nav class="sidebar" id="sidebar">
       <div class="nav-label">General</div>
       <div class="nav-item active" onclick="goto('dashboard')" id="nav-dashboard">&#9638; Matriz</div>
       <div class="nav-item" onclick="goto('progreso')" id="nav-progreso">&#11096; Progreso <span class="nav-badge" id="badge-pct">0%</span></div>
       <div class="nav-label" style="margin-top:4px;">Archivos</div>
       <div class="nav-item" onclick="goto('excelAdmin')" id="nav-excelAdmin">&#9703; Gestor Excel <span class="nav-badge" id="badge-excel">0</span></div>
       <div class="nav-item admin-only" onclick="goto('htmlAdmin')" id="nav-htmlAdmin">&#10022; Gestor HTML <span class="nav-badge" id="badge-html">0</span></div>
+      <div class="nav-label" style="margin-top:4px;">Notas</div>
+      <div class="nav-item" onclick="goto('notas')" id="nav-notas">&#9998; Mis notas</div>
+      <div class="nav-item" onclick="goto('tablon')" id="nav-tablon">&#128204; Tabl&#243;n general</div>
+      <div class="nav-item admin-only" onclick="goto('equipo')" id="nav-equipo">&#9787; Notas del equipo</div>
       <div class="nav-label admin-only" style="margin-top:4px;">Sistema</div>
       <div class="nav-item admin-only" onclick="goto('configuracion')" id="nav-configuracion">&#9881; Configuraci&#243;n</div>
-      <div class="nav-item admin-only" onclick="goto('notas')" id="nav-notas">&#9998; Mis notas</div>
       <div class="nav-item admin-only" onclick="goto('usuarios')" id="nav-usuarios">&#9787; Usuarios</div>
       <div class="nav-item master-only" onclick="goto('historial')" id="nav-historial">&#9776; Historial</div>
       <div class="nav-label" style="margin-top:4px;">Links</div>
@@ -411,8 +478,8 @@ html[data-atheme="vclight"] .toast-msg{box-shadow:0 2px 12px rgba(0,0,0,0.12);}
           <div class="config-list" id="recursosLista"></div>
         </div>
       </div>
-      <div class="view admin-only" id="view-notas">
-        <div class="page-header"><h1>&#9998; <span>Mis notas</span></h1><p>Privadas &middot; guardadas en la nube &middot; te siguen en cualquier equipo</p></div>
+      <div class="view" id="view-notas">
+        <div class="page-header"><h1>&#9998; <span>Mis notas</span></h1><p>Privadas &middot; solo t&#250; las ves &middot; guardadas en la nube</p></div>
         <div class="panel-card">
           <div class="panel-title">&#9998; Bloc de notas</div>
           <textarea id="notasTxt" oninput="notesChanged()" placeholder="Escribe aqu&#237; tus apuntes, pendientes, recordatorios..." style="width:100%;min-height:340px;resize:vertical;font-family:var(--font-body);font-size:13px;line-height:1.65;background:var(--bg-card);color:var(--text-prime);border:1px solid var(--border);border-radius:8px;padding:12px;"></textarea>
@@ -420,6 +487,41 @@ html[data-atheme="vclight"] .toast-msg{box-shadow:0 2px 12px rgba(0,0,0,0.12);}
             <button class="btn btn-success" onclick="saveNotes()">&#128190; Guardar</button>
             <span id="notasMeta" style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:0.5px;">&mdash;</span>
           </div>
+        </div>
+      </div>
+      <div class="view" id="view-tablon">
+        <div class="page-header"><h1>&#128204; <span>Tabl&#243;n</span> general</h1><p>Avisos del equipo &middot; lo lee todo el panel</p></div>
+        <div class="panel-card">
+          <div class="note-head">
+            <div class="note-ico am">&#128204;</div>
+            <div>
+              <div class="note-htitle">Tabl&#243;n general del equipo<span class="note-tag edit admin-only" id="tablonTagEdit">EDITAS T&#218;</span><span class="note-tag ro" id="tablonTagRo" style="display:none;">SOLO LECTURA</span></div>
+              <div class="note-hsub" id="tablonSub">Visible para todo el equipo &middot; lo publicas t&#250;</div>
+            </div>
+          </div>
+          <div class="admin-only" id="tablonEditWrap">
+            <textarea id="tablonTxt" oninput="tablonChanged()" placeholder="Escribe aqu&#237; el aviso general para el equipo..." style="width:100%;min-height:240px;resize:vertical;font-family:var(--font-body);font-size:13px;line-height:1.65;background:var(--bg-card);color:var(--text-prime);border:1px solid var(--border);border-radius:8px;padding:12px;"></textarea>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:10px;">
+              <button class="btn btn-primary" onclick="saveTablon()">&#128190; Publicar</button>
+              <span id="tablonMeta" style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:0.5px;">&mdash;</span>
+            </div>
+          </div>
+          <div id="tablonRoWrap" style="display:none;">
+            <div class="note-ro" id="tablonRo">&mdash;</div>
+          </div>
+        </div>
+      </div>
+      <div class="view admin-only" id="view-equipo">
+        <div class="page-header"><h1>&#9787; <span>Notas</span> del equipo</h1><p>Lo que cada usuario anot&#243; &middot; solo lectura &middot; solo t&#250; lo ves</p></div>
+        <div class="panel-card">
+          <div class="note-head">
+            <div class="note-ico pu">&#9787;</div>
+            <div>
+              <div class="note-htitle">Notas personales del equipo</div>
+              <div class="note-hsub">Cada usuario edita la suya &middot; t&#250; solo las lees</div>
+            </div>
+          </div>
+          <div class="team-list" id="teamList"><div class="empty-state">Cargando...</div></div>
         </div>
       </div>
       <div class="view admin-only" id="view-usuarios">
@@ -567,6 +669,10 @@ function applyRole(r){
   document.getElementById('roleLabel').textContent='// '+(r==='admin'?'ADMIN':'USUARIO');
   if(r!=='admin')document.querySelectorAll('.admin-only').forEach(function(el){el.style.display='none';});
   if(r!=='admin')document.querySelectorAll('.master-only').forEach(function(el){el.style.display='none';});
+  var isAdm=(r==='admin');
+  var roWrap=document.getElementById('tablonRoWrap');if(roWrap)roWrap.style.display=isAdm?'none':'';
+  var roTag=document.getElementById('tablonTagRo');if(roTag)roTag.style.display=isAdm?'none':'inline-block';
+  var tabSub=document.getElementById('tablonSub');if(tabSub&&!isAdm)tabSub.textContent='Publicado por el admin';
 }
 window.doLogout=async function(){rmP();try{await signOut(auth);}catch(e){}document.getElementById('loginScreen').style.display='flex';document.getElementById('appWrap').style.display='none';document.getElementById('loginPass').value='';CU=null;CR=null;};
 
@@ -577,7 +683,9 @@ function startListeners(){
   onSnapshot(query(collection(db,'htmlFiles'),orderBy('date','desc')),function(sn){S.htmlFiles=[];sn.forEach(function(d){S.htmlFiles.push(Object.assign({},d.data(),{fireId:d.id}));});renderHtmlList();document.getElementById('badge-html').textContent=S.htmlFiles.length;document.getElementById('html-count').textContent=S.htmlFiles.length;});
   onSnapshot(collection(db,'reviews'),function(sn){S.reviews={};sn.forEach(function(d){S.reviews[d.id]=d.data();});updateProgress();renderComments();if(S.curType)renderAdminTable();});
   if(CR==='admin')onSnapshot(query(collection(db,'historial'),orderBy('date','desc')),function(sn){S.historial=[];sn.forEach(function(d){S.historial.push(Object.assign({},d.data(),{fireId:d.id}));});renderHistorial();renderMatrix();});
-  if(CR==='admin')setupNotes();
+  setupNotes();
+  setupTablon();
+  if(CR==='admin')setupTeamNotes();
 }
 async function logH(t,m){try{await addDoc(collection(db,'historial'),{type:t,msg:m,user:CU,role:CR,date:new Date().toISOString()});}catch(e){}}
 
@@ -608,6 +716,60 @@ window.saveNotes=async function(){
   try{await setDoc(doc(db,'adminNotes',uid),{text:txt,updatedAt:iso});S.notesDirty=false;updateNotesMeta(iso);toast('Notas guardadas','var(--accent-green)');}
   catch(e){toast('Error al guardar notas: '+e.message,'var(--accent-red)');}
 };
+
+// TABLON GENERAL (un aviso compartido: admin publica, todo el staff lee)
+var _tablonTimer=null;
+function setupTablon(){
+  onSnapshot(doc(db,'sharedNotes','general'),function(sn){
+    var txt=sn.exists()?(sn.data().text||''):'';
+    var iso=sn.exists()?sn.data().updatedAt:null;
+    var ta=document.getElementById('tablonTxt');
+    if(ta&&CR==='admin'&&!S.tablonDirty){if(ta.value!==txt)ta.value=txt;}
+    var ro=document.getElementById('tablonRo');
+    if(ro)ro.textContent=txt||'(Sin avisos por ahora)';
+    var m=document.getElementById('tablonMeta');
+    if(m)m.textContent=iso?('Publicado: '+fmtNoteDate(iso)):'A\u00FAn sin publicar';
+    var sub=document.getElementById('tablonSub');
+    if(sub&&CR!=='admin')sub.textContent=iso?('Publicado por el admin \u00B7 '+fmtNoteDate(iso)):'Sin avisos por ahora';
+  });
+}
+window.tablonChanged=function(){
+  S.tablonDirty=true;
+  var m=document.getElementById('tablonMeta');if(m)m.textContent='Sin publicar\u2026';
+  clearTimeout(_tablonTimer);_tablonTimer=setTimeout(function(){saveTablon();},1500);
+};
+window.saveTablon=async function(){
+  if(CR!=='admin'){toast('Solo el admin publica el tabl\u00F3n','var(--accent-red)');return;}
+  clearTimeout(_tablonTimer);
+  var ta=document.getElementById('tablonTxt');if(!ta)return;
+  var txt=ta.value.slice(0,20000);var iso=new Date().toISOString();
+  try{await setDoc(doc(db,'sharedNotes','general'),{text:txt,updatedAt:iso,updatedBy:CU});S.tablonDirty=false;var m=document.getElementById('tablonMeta');if(m)m.textContent='Publicado: '+fmtNoteDate(iso);toast('Tabl\u00F3n publicado','var(--accent-green)');}
+  catch(e){toast('Error al publicar: '+e.message,'var(--accent-red)');}
+};
+
+// NOTAS DEL EQUIPO (solo admin: lee la nota personal de cada usuario)
+function setupTeamNotes(){
+  onSnapshot(collection(db,'adminNotes'),function(sn){
+    S.teamNotes={};sn.forEach(function(d){S.teamNotes[d.id]=d.data();});
+    renderTeamNotes();
+  });
+}
+function renderTeamNotes(){
+  var el=document.getElementById('teamList');if(!el)return;
+  var notes=S.teamNotes||{},users=S.dbUsers||{};
+  var myUid=auth.currentUser&&auth.currentUser.uid;
+  var uids=Object.keys(notes).filter(function(uid){return uid!==myUid&&((notes[uid].text||'').trim());});
+  uids.sort(function(a,b){var ta=notes[a].updatedAt||'',tb=notes[b].updatedAt||'';return tb<ta?-1:(tb>ta?1:0);});
+  if(!uids.length){el.innerHTML='<div class="team-empty-note">A\u00FAn no hay notas de otros usuarios.</div>';return;}
+  var html='';
+  uids.forEach(function(uid){
+    var n=notes[uid],txt=(n.text||'').trim();
+    var u=users[uid]||{},nm=u.usuario||u.email||('Usuario '+uid.slice(0,6)),role=u.role||'usuario';
+    var date=n.updatedAt?fmtNoteDate(n.updatedAt):'';
+    html+='<div class="team-row"><div class="team-top"><div class="team-av">'+eh(nm[0].toUpperCase())+'</div><div><div class="team-name">'+eh(nm)+'</div><div class="team-role">'+eh(role)+'</div></div><div class="team-date">'+eh(date)+'</div></div><div class="team-text">'+eh(txt)+'</div></div>';
+  });
+  el.innerHTML=html;
+}
 
 function renderHistorial(){
   var el=document.getElementById('historialList');if(!el)return;
@@ -1050,7 +1212,9 @@ function renderExcelFileList(){
   });
 }
 
-window.goto=function(id){document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});var v=document.getElementById('view-'+id),n=document.getElementById('nav-'+id);if(v)v.classList.add('active');if(n)n.classList.add('active');};
+window.goto=function(id){document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});var v=document.getElementById('view-'+id),n=document.getElementById('nav-'+id);if(v)v.classList.add('active');if(n)n.classList.add('active');document.body.classList.remove('nav-open');};
+window.toggleNav=function(){document.body.classList.toggle('nav-open');};
+window.closeNav=function(){document.body.classList.remove('nav-open');};
 window.copyPublicLink=function(){var url=window.location.href.replace('admin.html','index.html');navigator.clipboard.writeText(url).then(function(){toast('Link publico copiado','var(--accent-green)');}).catch(function(){toast('Link: '+url,'var(--accent-blue)');});};
 function makeKey(tk,row,headers){var key=(tk+'__'+headers.slice(0,3).map(function(h){return String(row[h]!=null?row[h]:'');}).join('_')).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,100);return key||('row_'+Math.random().toString(36).slice(2));}
 function eh(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
