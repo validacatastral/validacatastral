@@ -107,6 +107,22 @@ service cloud.firestore {
         && request.resource.data.text is string
         && request.resource.data.text.size() <= 20000;
     }
+    // ---------- marcas_vias (visor de vias: atencion de cada registro) ----------
+    // Lectura publica. Cualquier sesion (incluida anonima) marca, pero solo
+    // con la forma exacta y tamanos acotados. Borrar: solo el staff.
+    match /marcas_vias/{k} {
+      allow read: if true;
+      allow create, update: if isSignedIn()
+        && k.size() <= 320
+        && request.resource.data.keys().hasOnly(['estado', 'obs', 'revisor', 'fecha', 'pol', 'crc'])
+        && request.resource.data.estado in ['pendiente', 'atendido', 'falso_error']
+        && request.resource.data.obs is string && request.resource.data.obs.size() <= 1000
+        && request.resource.data.revisor is string && request.resource.data.revisor.size() <= 60
+        && request.resource.data.fecha is string && request.resource.data.fecha.size() <= 40
+        && request.resource.data.pol is string && request.resource.data.pol.size() <= 20
+        && request.resource.data.crc is string && request.resource.data.crc.size() <= 40;
+      allow delete: if isStaff();
+    }
     // ---------- todo lo demas: denegado ----------
     match /{document=**} {
       allow read, write: if false;
