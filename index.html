@@ -4,27 +4,47 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <title>ValidaCatastral</title>
 <style>
-html,body{height:100%;margin:0}
-body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(900px 500px at 50% 40%,#2a1d17 0%,#141414 70%);color:#f1ebe6;font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;padding:24px;overflow:hidden}
-.mk{width:64px;height:64px;animation:flota 3.2s ease-in-out infinite}
-h1{margin:0;font-size:clamp(44px,9vw,92px);font-weight:700;letter-spacing:-.02em;animation:entra .9s ease both}
-h1 b{color:#e8825f}
-p{margin:0;color:#9a928c;font-size:clamp(15px,2.4vw,20px);letter-spacing:.18em;text-transform:uppercase;animation:entra .9s .25s ease both}
-.pt{display:flex;gap:8px;margin-top:10px}
-.pt i{width:9px;height:9px;border-radius:50%;background:#e8825f;opacity:.25;animation:pulso 1.4s ease-in-out infinite}
-.pt i:nth-child(2){animation-delay:.2s}.pt i:nth-child(3){animation-delay:.4s}
-@keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@keyframes flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes pulso{0%,100%{opacity:.25;transform:scale(1)}50%{opacity:1;transform:scale(1.35)}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+html,body{height:100%;margin:0;background:#000}
+body{position:relative;overflow:hidden;color:#3dff7a;font:16px/1.4 "Courier Prime","Courier New",Courier,monospace}
+.code{position:absolute;top:22px;left:24px;font-size:12px;line-height:1.5;color:#2fd466;white-space:pre;opacity:.9}
+.back{position:absolute;left:50%;top:50%;width:min(520px,78vw);height:230px;transform:translate(-4%,-30%);border:1px solid #1f9c47;background:rgba(0,40,15,.35);box-shadow:0 0 18px #3dff7a22}
+.back .tb{height:22px;background:#0c3d1b;border-bottom:1px solid #1f9c47}
+.back .tb i{display:block;height:100%;width:0;background:#2ee866;box-shadow:0 0 10px #3dff7a99;animation:fill 6s cubic-bezier(.2,.7,.2,1) forwards}
+.back pre{margin:10px 12px;font-size:10px;line-height:1.5;color:#1f9c47;white-space:pre-wrap}
+.front{position:absolute;left:50%;top:50%;transform:translate(-62%,-86%);width:min(560px,86vw);box-sizing:border-box;padding:34px 26px;text-align:center;border:2px solid #3dff7a;background:rgba(0,60,22,.55);box-shadow:0 0 22px #3dff7a55,inset 0 0 22px #3dff7a22}
+h1{margin:0;font-size:clamp(20px,3.6vw,34px);font-weight:700;letter-spacing:.07em;text-transform:uppercase;line-height:1.25;text-shadow:0 0 10px #3dff7a77}
+.pct{margin-top:14px;font-weight:700;font-size:clamp(22px,4vw,34px);font-variant-numeric:tabular-nums;text-shadow:0 0 12px #3dff7a66}
+.est{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;font-size:11px;letter-spacing:.06em}
+.est span{padding:3px 9px;border:1px solid}
+.w{color:#e6d04f;border-color:#6b6120}.o{color:#7dffa5;border-color:#1f7a3d;opacity:0;animation:ap 1s 5.4s forwards}
+.pie{position:absolute;bottom:18px;left:0;right:0;text-align:center;font-size:12px;letter-spacing:.2em;color:#1a7a39;text-transform:uppercase}
+@keyframes fill{to{width:99.999999%}}
+@keyframes ap{to{opacity:1}}
+@media (max-width:640px){.back{transform:translate(-50%,-10%);height:200px}.front{transform:translate(-50%,-96%)}.code{font-size:10px}}
+@media (prefers-reduced-motion:reduce){.back .tb i{animation:none;width:99.999999%}.o{animation:none;opacity:1}}
 </style>
 </head>
 <body>
-<svg class="mk" viewBox="0 0 64 64" fill="none" stroke="#e8825f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 18l22 34L54 10"/></svg>
-<h1>¡Hasta <b>pronto</b>!</h1>
-<p>ValidaCatastral</p>
-<div class="pt" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="code">if (revision.estado == 'corregido' &amp;&amp;
+      observacion.pendiente == 1) {</div>
+<div class="back"><div class="tb"><i></i></div><pre>cruce: version_nueva vs version_anterior
+resueltas ........ ok
+nuevas ........... ok
+reaparecidas ..... ok
+ajustando ultima observacion_</pre></div>
+<div class="front">
+<h1>Subsanando observaciones…<br>volvemos pronto</h1>
+<div class="pct" id="p">0.000000%</div>
+<div class="est"><span class="w">ADVERTENCIA · 1 observación pendiente</span><span class="o">CORREGIDO · casi</span></div>
+</div>
+<div class="pie">ValidaCatastral</div>
+<script>
+(function(){var el=document.getElementById('p'),t0=performance.now(),D=6000,F=99.999999;
+function f(t){var x=Math.min(1,(t-t0)/D);el.textContent=(F*(1-Math.pow(1-x,3.2))).toFixed(6)+'%';if(x<1)requestAnimationFrame(f);else el.textContent='99.999999%';}
+if(matchMedia('(prefers-reduced-motion:reduce)').matches)el.textContent='99.999999%';else requestAnimationFrame(f);})();
+</script>
 </body>
 </html>
