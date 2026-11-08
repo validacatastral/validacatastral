@@ -7,13 +7,24 @@
 <title>ValidaCatastral</title>
 <style>
 html,body{height:100%;margin:0}
-body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:#141414;color:#e8e8ea;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;padding:24px}
-h1{margin:0;font-size:26px;font-weight:600}
-p{margin:0;color:#8a8a8f;font-size:14px}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(900px 500px at 50% 40%,#2a1d17 0%,#141414 70%);color:#f1ebe6;font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;padding:24px;overflow:hidden}
+.mk{width:64px;height:64px;animation:flota 3.2s ease-in-out infinite}
+h1{margin:0;font-size:clamp(44px,9vw,92px);font-weight:700;letter-spacing:-.02em;animation:entra .9s ease both}
+h1 b{color:#e8825f}
+p{margin:0;color:#9a928c;font-size:clamp(15px,2.4vw,20px);letter-spacing:.18em;text-transform:uppercase;animation:entra .9s .25s ease both}
+.pt{display:flex;gap:8px;margin-top:10px}
+.pt i{width:9px;height:9px;border-radius:50%;background:#e8825f;opacity:.25;animation:pulso 1.4s ease-in-out infinite}
+.pt i:nth-child(2){animation-delay:.2s}.pt i:nth-child(3){animation-delay:.4s}
+@keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pulso{0%,100%{opacity:.25;transform:scale(1)}50%{opacity:1;transform:scale(1.35)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
 <body>
-<h1>¡Hasta pronto!</h1>
+<svg class="mk" viewBox="0 0 64 64" fill="none" stroke="#e8825f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 18l22 34L54 10"/></svg>
+<h1>¡Hasta <b>pronto</b>!</h1>
 <p>ValidaCatastral</p>
+<div class="pt" aria-hidden="true"><i></i><i></i><i></i></div>
 </body>
 </html>
