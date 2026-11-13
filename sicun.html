@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Informe SICUN · Avance · ValidaCatastral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ValidaCatastral ©diegocampos — Avance del Informe SICUN (vista de revisores, solo lectura).
+   Misma paleta y componentes que el panel Progreso de admin.html. */
+:root{--bg-void:#07090d;--bg-deep:#0c1015;--bg-panel:#10151c;--bg-card:#151b23;--bg-hover:#1b232d;--border:#23303f;--accent-cyan:#3fc6ee;--accent-blue:#2f9fd0;--accent-purple:#a78bfa;--accent-green:#3fd99a;--accent-amber:#e8b14a;--accent-red:#e87070;--text-prime:#dce4ec;--text-mute:#9fb3c4;--text-dim:#5c7186;--font-mono:'Share Tech Mono',monospace;--font-head:'Rajdhani',sans-serif;--font-body:'Inter',system-ui,sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+[hidden]{display:none!important;}
+body{background:var(--bg-void);color:var(--text-prime);font-family:var(--font-body);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(63,198,238,0.012) 2px,rgba(63,198,238,0.012) 4px);pointer-events:none;z-index:9999;}
+:focus-visible{outline:2px solid var(--accent-cyan);outline-offset:2px;}
+
+.topbar{background:var(--bg-deep);border-bottom:1px solid var(--border);padding:8px 20px;min-height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px;flex-wrap:wrap;}
+.topbar-logo-text{font-family:var(--font-head);font-size:17px;font-weight:700;letter-spacing:2px;color:var(--accent-cyan);}
+.topbar-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;}
+.topbar-right{display:flex;align-items:center;gap:12px;font-family:var(--font-mono);font-size:11px;color:var(--text-mute);flex-wrap:wrap;}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent-green);margin-right:6px;box-shadow:0 0 8px var(--accent-green);}
+.dot.off{background:var(--accent-amber);box-shadow:none;}
+
+.wrap{max-width:1240px;margin:0 auto;padding:22px 20px 48px;}
+.page-header{margin-bottom:18px;}
+.page-header h1{font-family:var(--font-head);font-size:24px;font-weight:700;letter-spacing:2px;margin-bottom:3px;}
+.page-header p{font-size:12px;color:var(--text-mute);}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;}
+.stat{background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.stat-label{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.stat-value{font-family:var(--font-mono);font-size:26px;line-height:1;color:var(--text-prime);font-variant-numeric:tabular-nums;}
+.stat-value small{font-size:12px;color:var(--text-mute);margin-left:6px;}
+
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+.tools .count{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:1px;}
+select,input[type="text"],input[type="password"],input[type="search"]{background:var(--bg-deep);border:1px solid var(--border);color:var(--text-prime);padding:8px 10px;border-radius:6px;font-family:var(--font-body);font-size:13px;outline:none;transition:border-color 0.15s;}
+select:focus,input:focus{border-color:var(--accent-blue);}
+.btn{padding:7px 13px;border-radius:6px;border:1px solid var(--border);background:var(--bg-card);color:var(--text-mute);font-family:var(--font-head);font-size:12px;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.btn:hover{background:var(--bg-hover);color:var(--text-prime);}
+
+.pol{background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.pol>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:13px 16px;}
+.pol>summary::-webkit-details-marker{display:none;}
+.pol>summary:hover{background:var(--bg-card);}
+.pol>summary::before{content:'\25B8';color:var(--text-dim);font-size:12px;transition:transform 0.15s;}
+.pol[open]>summary::before{transform:rotate(90deg);}
+.pol-name{font-family:var(--font-mono);font-weight:700;font-size:14px;color:var(--text-prime);letter-spacing:1px;}
+.pol-bar{flex:1;min-width:120px;height:6px;background:var(--bg-deep);border-radius:4px;overflow:hidden;}
+.pol-pct{font-family:var(--font-mono);font-size:13px;min-width:44px;text-align:right;font-variant-numeric:tabular-nums;}
+.pol-meta{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);}
+.pol-body{padding:4px 16px 16px;border-top:1px solid var(--border);}
+.pol-kpis{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10px;color:var(--text-mute);letter-spacing:1px;padding:12px 0;}
+.pol-kpis b{color:var(--text-prime);font-weight:400;font-size:13px;margin-left:5px;}
+
+.progress-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.progress-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.circle-wrap{position:relative;width:100px;height:100px;}
+.circle-wrap svg{transform:rotate(-90deg);width:100px;height:100px;}
+.circle-bg{fill:none;stroke:var(--bg-deep);stroke-width:8;}
+.circle-fg{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);}
+.circle-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.circle-pct{font-family:var(--font-mono);font-size:20px;font-weight:700;line-height:1;}
+.circle-lbl{font-family:var(--font-mono);font-size:8px;color:var(--text-mute);letter-spacing:1px;margin-top:3px;}
+.progress-info{text-align:center;width:100%;}
+.progress-type{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:1px;margin-bottom:3px;overflow-wrap:anywhere;}
+.progress-counts{font-family:var(--font-mono);font-size:10px;color:var(--text-mute);margin-bottom:5px;}
+.bar-wrap{width:100%;background:var(--bg-deep);border-radius:4px;height:4px;overflow:hidden;margin-bottom:8px;}
+.bar-fill{display:block;height:100%;border-radius:4px;width:0;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
+.time-row{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:9px;color:var(--text-mute);width:100%;}
+.time-row span{color:var(--text-dim);font-size:8px;}
+.time-val{color:var(--text-prime);}
+
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-dim);font-size:13px;line-height:1.6;}
+.empty-state b{display:block;color:var(--text-mute);font-family:var(--font-head);font-size:16px;letter-spacing:2px;margin-bottom:6px;}
+
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.login-card{background:var(--bg-panel);border:1px solid var(--border);border-radius:14px;padding:36px;width:380px;max-width:100%;box-shadow:0 0 60px rgba(0,0,0,0.5);}
+.login-logo{text-align:center;margin-bottom:24px;}
+.login-logo-text{font-family:var(--font-head);font-size:22px;font-weight:700;letter-spacing:4px;color:var(--accent-cyan);}
+.login-sub{color:var(--text-mute);font-size:11px;letter-spacing:2px;font-family:var(--font-mono);margin-top:8px;}
+.form-group{margin-bottom:12px;}
+.form-group label{display:block;font-size:9px;color:var(--text-mute);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;font-family:var(--font-mono);}
+.form-group input{width:100%;}
+.login-btn{width:100%;padding:11px;background:rgba(47,159,208,0.15);border:1px solid var(--accent-blue);color:var(--accent-cyan);font-family:var(--font-head);font-size:15px;font-weight:700;letter-spacing:3px;border-radius:8px;cursor:pointer;margin-top:8px;transition:all 0.2s;text-transform:uppercase;}
+.login-btn:hover{background:rgba(47,159,208,0.3);}
+.login-btn:disabled{opacity:0.5;cursor:wait;}
+.alert-err{padding:8px 12px;border-radius:6px;font-size:12px;margin-bottom:12px;background:rgba(232,112,112,0.08);border:1px solid rgba(232,112,112,0.3);color:var(--accent-red);}
+
+@media (max-width:560px){
+  .wrap{padding:16px 12px 40px;}
+  .pol>summary{padding:12px;gap:8px;}
+  .pol-bar{order:5;flex-basis:100%;}
+  .pol-meta{flex-basis:100%;}
+  .progress-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .tools .count{margin-left:0;flex-basis:100%;}
+  .topbar{padding:8px 12px;}
+  .progress-type{font-size:12px;letter-spacing:0;}
+}
+@media (prefers-reduced-motion:reduce){.circle-fg,.bar-fill,.pol>summary::before{transition:none;}}
+</style>
+</head>
+<body>
+
+<!-- Cargando -->
+<div class="login-wrap" id="scrCarga"><div class="empty-state">Cargando&hellip;</div></div>
+
+<!-- Ingreso -->
+<div class="login-wrap" id="scrLogin" hidden>
+  <form class="login-card" id="loginForm" autocomplete="on">
+    <div class="login-logo">
+      <div class="login-logo-text">VALIDA CATASTRAL</div>
+      <div class="login-sub">// INFORME SICUN &middot; AVANCE //</div>
+    </div>
+    <div class="alert-err" id="loginError" role="alert" hidden></div>
+    <div class="form-group"><label for="loginUser">Usuario</label><input type="text" id="loginUser" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="usuario"></div>
+    <div class="form-group"><label for="loginPass">Contrase&ntilde;a</label><input type="password" id="loginPass" autocomplete="current-password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
+    <button class="login-btn" id="loginBtn" type="submit">Ingresar</button>
+  </form>
+</div>
+
+<!-- Sin acceso -->
+<div class="login-wrap" id="scrDenegado" hidden>
+  <div class="login-card" style="text-align:center;">
+    <div class="login-logo-text" style="color:var(--accent-amber);">SIN ACCESO</div>
+    <p style="color:var(--text-mute);font-size:13px;line-height:1.6;margin:14px 0 20px;" id="denegadoTxt">Tu cuenta no tiene permiso para ver el avance del Informe SICUN. Pide al administrador que la habilite.</p>
+    <button class="login-btn" type="button" id="denegadoSalir">Cambiar de cuenta</button>
+  </div>
+</div>
+
+<!-- Avance -->
+<div id="scrApp" hidden>
+  <div class="topbar">
+    <div>
+      <div class="topbar-logo-text">VALIDA CATASTRAL</div>
+      <div class="topbar-sub">Informe SICUN &middot; avance</div>
+    </div>
+    <div class="topbar-right">
+      <span id="actualizado" aria-live="polite"><span class="dot off"></span>Esperando datos&hellip;</span>
+      <button class="btn" type="button" id="salirBtn">Salir</button>
+    </div>
+  </div>
+  <main class="wrap">
+    <div class="page-header">
+      <h1>AVANCE POR POL&Iacute;GONO</h1>
+      <p>Filas revisadas en los Excel de validaciones (APLICA, NO APLICA u OTRO CAMBIO). Se actualiza solo.</p>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="tools" id="tools" hidden>
+      <input type="search" id="filtro" placeholder="Buscar pol&iacute;gono&hellip;" aria-label="Buscar pol&iacute;gono" inputmode="numeric" style="min-width:200px;">
+      <select id="orden" aria-label="Ordenar">
+        <option value="pol">Orden: pol&iacute;gono</option>
+        <option value="menor">Orden: menor avance</option>
+        <option value="mayor">Orden: mayor avance</option>
+      </select>
+      <button class="btn" type="button" id="abrirTodo">Abrir todos</button>
+      <button class="btn" type="button" id="cerrarTodo">Cerrar todos</button>
+      <span class="count" id="conteo"></span>
+    </div>
+    <div id="lista"><div class="empty-state">Cargando avance&hellip;</div></div>
+  </main>
+</div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getFirestore,doc,onSnapshot}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import{initializeAppCheck,ReCaptchaV3Provider}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app-check.js";
+
+// Mismo proyecto Firebase que el panel (dataforge-mio). Estos valores son publicos por diseno.
+const fCfg={apiKey:"AIzaSyBrTT-bK_UTZLSg6BVMiVviIQmAYFbGo9Q",authDomain:"dataforge-mio.firebaseapp.com",projectId:"dataforge-mio",storageBucket:"dataforge-mio.firebasestorage.app",messagingSenderId:"687282166437",appId:"1:687282166437:web:83772a6d56c52185784b4c"};
+const app=initializeApp(fCfg);
+// App Check: la clave de sitio reCAPTCHA v3 es publica. El dominio de esta pagina
+// debe estar permitido en esa clave (consola de reCAPTCHA).
+const RECAPTCHA_SITE_KEY="6LfXWiotAAAAAJkUjVREaZ0OGJ007YSqm3R74ImI";
+try{initializeAppCheck(app,{provider:new ReCaptchaV3Provider(RECAPTCHA_SITE_KEY),isTokenAutoRefreshEnabled:true});}catch(e){console.warn('appcheck',e);}
+const db=getFirestore(app);
+const auth=getAuth(app);
+const MAIL='@validacatastral.com';
+
+const $=id=>document.getElementById(id);
+const SCR=['scrCarga','scrLogin','scrDenegado','scrApp'];
+function pantalla(id){SCR.forEach(s=>{$(s).hidden=(s!==id);});}
+function eh(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+const n=v=>{v=+v;return isFinite(v)&&v>0?Math.round(v):0;};
+const pctDe=(rev,filas)=>filas?Math.min(100,Math.round(rev/filas*100)):0;
+const fmt=v=>n(v).toLocaleString('es-PE');
+
+let pols=[],unsub=null,primera=true;
+const abiertos=new Set();
+
+/* ---------- Sesion ---------- */
+$('loginForm').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const u=$('loginUser').value.trim().toLowerCase(),p=$('loginPass').value,err=$('loginError'),btn=$('loginBtn');
+  err.hidden=true;
+  if(!u||!p){err.textContent='Completa usuario y contraseña.';err.hidden=false;return;}
+  btn.disabled=true;
+  try{await signInWithEmailAndPassword(auth,u.indexOf('@')>=0?u:u+MAIL,p);$('loginPass').value='';}
+  catch(e){
+    const c=(e&&e.code)||'';
+    err.textContent=c==='auth/network-request-failed'?'Sin conexión. Revisa tu internet e intenta de nuevo.':c==='auth/too-many-requests'?'Demasiados intentos. Espera unos minutos.':'Usuario o contraseña incorrectos.';
+    err.hidden=false;
+  }
+  btn.disabled=false;
+});
+function salir(){if(unsub){unsub();unsub=null;}signOut(auth).catch(()=>{});}
+$('salirBtn').addEventListener('click',salir);
+$('denegadoSalir').addEventListener('click',salir);
+
+onAuthStateChanged(auth,user=>{
+  if(unsub){unsub();unsub=null;}
+  if(!user||user.isAnonymous){pols=[];primera=true;abiertos.clear();pantalla('scrLogin');$('loginUser').focus();return;}
+  pantalla('scrApp');
+  unsub=onSnapshot(doc(db,'sicunAvance','resumen'),sn=>{
+    if(!sn.exists()){pols=[];estado(null);pintar(true);return;}
+    const d=sn.data()||{};
+    pols=Array.isArray(d.poligonos)?d.poligonos:[];
+    estado(d.at&&d.at.toDate?d.at.toDate():null,sn.metadata.fromCache);
+    pintar(true);
+  },e=>{
+    console.warn('sicunAvance',e);
+    if(e&&e.code==='permission-denied'){pantalla('scrDenegado');return;}
+    $('lista').innerHTML='<div class="empty-state"><b>NO SE PUDO CARGAR</b>Revisa tu conexión y recarga la página.</div>';
+  });
+});
+
+function estado(fecha,cache){
+  const el=$('actualizado');
+  if(!fecha){el.innerHTML='<span class="dot off"></span>Sin datos todavía';return;}
+  const hoy=new Date(),mismo=fecha.toDateString()===hoy.toDateString();
+  const txt=(mismo?'hoy':fecha.toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit',year:'numeric'}))+' '+fecha.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+  el.innerHTML='<span class="dot'+(cache?' off':'')+'"></span>Actualizado: '+eh(txt)+(cache?' (sin conexión)':'');
+}
+
+/* ---------- Pintado ---------- */
+const COL=['var(--accent-cyan)','var(--accent-green)','var(--accent-purple)','var(--accent-amber)','var(--accent-blue)'];
+const R=42,C=2*Math.PI*R;
+const colorPct=p=>p>=100?'var(--accent-green)':(p>=30?'var(--accent-amber)':'var(--accent-red)');
+
+function tarjeta(v,i){
+  v=v||{};
+  const filas=n(v.filas),rev=n(v.rev),p=pctDe(rev,filas),sin=!!v.sinCol,color=sin?'var(--accent-red)':COL[i%COL.length],off=C-(p/100)*C;
+  return'<div class="progress-card"><div class="circle-wrap"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="circle-bg" cx="50" cy="50" r="'+R+'"/><circle class="circle-fg" cx="50" cy="50" r="'+R+'" style="stroke:'+color+';stroke-dasharray:'+C+';stroke-dashoffset:'+C+'" data-offset="'+(sin?C:off)+'"/></svg>'+
+    '<div class="circle-center"><div class="circle-pct" style="color:'+color+'">'+(sin?'!':p+'%')+'</div><div class="circle-lbl">'+(sin?'SIN COLUMNA':'REVISADO')+'</div></div></div>'+
+    '<div class="progress-info"><div class="progress-type">'+eh(v.nombre||'—')+'</div><div class="progress-counts">'+(sin?'No tiene columna de estado':fmt(rev)+' / '+fmt(filas)+' filas')+'</div>'+
+    '<div class="bar-wrap"><span class="bar-fill" data-pct="'+(sin?0:p)+'" style="background:'+color+';"></span></div>'+
+    '<div class="time-row"><div><span>APLICA</span><br><b class="time-val">'+fmt(v.ap)+'</b></div><div style="text-align:center;"><span>NO APLICA</span><br><b class="time-val">'+fmt(v.na)+'</b></div><div style="text-align:right;"><span>OTRO CAMBIO</span><br><b class="time-val">'+fmt(v.oc)+'</b></div></div></div></div>';
+}
+
+function pintar(suave){
+  const lista=$('lista'),stats=$('stats'),tools=$('tools');
+  if(!pols.length){
+    stats.innerHTML='';tools.hidden=true;
+    lista.innerHTML='<div class="empty-state"><b>AÚN NO HAY AVANCE</b>El administrador todavía no ha publicado el avance del Informe SICUN.</div>';
+    return;
+  }
+  // Totales
+  let F=0,RV=0,AP=0,NA=0,OC=0;
+  pols.forEach(p=>{const t=(p&&p.total)||{};F+=n(t.filas);RV+=n(t.rev);AP+=n(t.ap);NA+=n(t.na);OC+=n(t.oc);});
+  const st=(l,v,extra,c)=>'<div class="stat"><div class="stat-label">'+l+'</div><div class="stat-value"'+(c?' style="color:'+c+'"':'')+'>'+v+(extra?'<small>'+extra+'</small>':'')+'</div></div>';
+  stats.innerHTML=st('Polígonos',fmt(pols.length))+st('Revisado',pctDe(RV,F)+'%',fmt(RV)+' / '+fmt(F),'var(--accent-cyan)')+st('Aplica',fmt(AP))+st('No aplica',fmt(NA))+st('Otro cambio',fmt(OC))+st('Pendientes',fmt(Math.max(0,F-RV)),'','var(--accent-amber)');
+  tools.hidden=false;
+
+  // Filtro y orden
+  const q=$('filtro').value.trim().toLowerCase(),ord=$('orden').value;
+  let ver=pols.filter(p=>p&&(!q||String(p.poligono||'').toLowerCase().indexOf(q)>=0));
+  const pp=p=>{const t=p.total||{};return pctDe(n(t.rev),n(t.filas));};
+  ver=ver.slice().sort((a,b)=>ord==='menor'?pp(a)-pp(b):ord==='mayor'?pp(b)-pp(a):String(a.poligono||'').localeCompare(String(b.poligono||''),'es',{numeric:true}));
+  $('conteo').textContent=ver.length===pols.length?pols.length+' polígonos':ver.length+' de '+pols.length+' polígonos';
+  if(!ver.length){lista.innerHTML='<div class="empty-state">Ningún polígono coincide con «'+eh(q)+'».</div>';return;}
+
+  // La primera vez: abiertos si son pocos
+  if(primera){primera=false;if(pols.length<=3)pols.forEach(p=>abiertos.add(String(p.poligono||'')));}
+
+  lista.innerHTML=ver.map(p=>{
+    const id=String(p.poligono||''),t=p.total||{},pct=pp(p),vals=Array.isArray(p.validadores)?p.validadores:[];
+    return'<details class="pol" data-pol="'+eh(id)+'"'+(abiertos.has(id)?' open':'')+'><summary>'+
+      '<span class="pol-name">'+eh(id||'—')+'</span>'+
+      '<span class="pol-bar"><span class="bar-fill" data-pct="'+pct+'" style="background:'+colorPct(pct)+';"></span></span>'+
+      '<span class="pol-pct" style="color:'+colorPct(pct)+'">'+pct+'%</span>'+
+      '<span class="pol-meta">'+fmt(t.rev)+' / '+fmt(t.filas)+' filas &middot; '+vals.length+(vals.length===1?' validador':' validadores')+(p.leido?' &middot; leído '+eh(p.leido):'')+'</span>'+
+      '</summary><div class="pol-body">'+
+      '<div class="pol-kpis"><span>APLICA<b>'+fmt(t.ap)+'</b></span><span>NO APLICA<b>'+fmt(t.na)+'</b></span><span>OTRO CAMBIO<b>'+fmt(t.oc)+'</b></span><span>PENDIENTES<b>'+fmt(Math.max(0,n(t.filas)-n(t.rev)))+'</b></span></div>'+
+      (vals.length?'<div class="progress-grid">'+vals.map(tarjeta).join('')+'</div>':'<div class="empty-state" style="padding:16px;">Sin validadores.</div>')+
+      '</div></details>';
+  }).join('');
+  animar(lista,suave===true);
+}
+// suave=true: anima desde cero (llegaron datos). Si no, deja el valor final sin animar (filtro, orden).
+function animar(raiz,suave){
+  const fin=()=>{
+    raiz.querySelectorAll('.circle-fg').forEach(el=>{el.style.strokeDashoffset=el.getAttribute('data-offset');});
+    raiz.querySelectorAll('.bar-fill').forEach(el=>{el.style.width=el.getAttribute('data-pct')+'%';});
+  };
+  if(suave)requestAnimationFrame(()=>requestAnimationFrame(fin));else fin();
+}
+
+/* ---------- Controles ---------- */
+$('lista').addEventListener('toggle',ev=>{
+  const d=ev.target;if(!d.classList||!d.classList.contains('pol'))return;
+  const id=d.getAttribute('data-pol');if(d.open)abiertos.add(id);else abiertos.delete(id);
+},true);
+$('filtro').addEventListener('input',()=>pintar());
+$('orden').addEventListener('change',()=>pintar());
+$('abrirTodo').addEventListener('click',()=>{pols.forEach(p=>abiertos.add(String((p&&p.poligono)||'')));pintar();});
+$('cerrarTodo').addEventListener('click',()=>{abiertos.clear();pintar();});
+</script>
+</body>
+</html>
