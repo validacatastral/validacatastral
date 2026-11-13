@@ -5,12 +5,21 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Informe SICUN · Avance · ValidaCatastral</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307090d'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%2323303f' stroke-width='4'/%3E%3Cpath d='M16 7a9 9 0 0 1 9 9' fill='none' stroke='%233fc6ee' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<script>try{if(localStorage.getItem('vc-sicun-theme')==='claro')document.documentElement.setAttribute('data-tema','claro');}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ValidaCatastral ©diegocampos — Avance del Informe SICUN (vista de revisores, solo lectura).
    Misma paleta y componentes que el panel Progreso de admin.html. */
 :root{--bg-void:#07090d;--bg-deep:#0c1015;--bg-panel:#10151c;--bg-card:#151b23;--bg-hover:#1b232d;--border:#23303f;--accent-cyan:#3fc6ee;--accent-blue:#2f9fd0;--accent-purple:#a78bfa;--accent-green:#3fd99a;--accent-amber:#e8b14a;--accent-red:#e87070;--text-prime:#dce4ec;--text-mute:#9fb3c4;--text-dim:#5c7186;--font-mono:'Share Tech Mono',monospace;--font-head:'Rajdhani',sans-serif;--font-body:'Inter',system-ui,sans-serif;}
+html{color-scheme:dark;}
+html[data-tema="claro"]{color-scheme:light;--bg-void:#fafafa;--bg-deep:#f1f1f2;--bg-panel:#ffffff;--bg-card:#f5f5f6;--bg-hover:#ececee;--border:#e3e3e6;--accent-cyan:#0f6e56;--accent-blue:#128a68;--accent-purple:#5f51c9;--accent-green:#0f6e56;--accent-amber:#925f0e;--accent-red:#b54a4a;--text-prime:#19191b;--text-mute:#56565d;--text-dim:#85858c;}
+html[data-tema="claro"] body::before{display:none;}
+html[data-tema="claro"] .login-card{box-shadow:0 8px 40px rgba(0,0,0,0.08);}
+html[data-tema="claro"] .login-btn{background:rgba(18,138,104,0.10);}
+html[data-tema="claro"] .login-btn:hover{background:rgba(18,138,104,0.20);}
+html[data-tema="claro"] .dot{box-shadow:none;}
 *{margin:0;padding:0;box-sizing:border-box;}
 [hidden]{display:none!important;}
 body{background:var(--bg-void);color:var(--text-prime);font-family:var(--font-body);min-height:100vh;}
@@ -31,7 +40,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;}
 .stat{background:var(--bg-panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
-.stat-label{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.stat-label{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
 .stat-value{font-family:var(--font-mono);font-size:26px;line-height:1;color:var(--text-prime);font-variant-numeric:tabular-nums;}
 .stat-value small{font-size:12px;color:var(--text-mute);margin-left:6px;}
 
@@ -51,9 +60,9 @@ select:focus,input:focus{border-color:var(--accent-blue);}
 .pol-name{font-family:var(--font-mono);font-weight:700;font-size:14px;color:var(--text-prime);letter-spacing:1px;}
 .pol-bar{flex:1;min-width:120px;height:6px;background:var(--bg-deep);border-radius:4px;overflow:hidden;}
 .pol-pct{font-family:var(--font-mono);font-size:13px;min-width:44px;text-align:right;font-variant-numeric:tabular-nums;}
-.pol-meta{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);}
+.pol-meta{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);}
 .pol-body{padding:4px 16px 16px;border-top:1px solid var(--border);}
-.pol-kpis{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10px;color:var(--text-mute);letter-spacing:1px;padding:12px 0;}
+.pol-kpis{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--font-mono);font-size:11px;color:var(--text-mute);letter-spacing:1px;padding:12px 0;}
 .pol-kpis b{color:var(--text-prime);font-weight:400;font-size:13px;margin-left:5px;}
 
 .progress-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
@@ -64,14 +73,14 @@ select:focus,input:focus{border-color:var(--accent-blue);}
 .circle-fg{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);}
 .circle-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
 .circle-pct{font-family:var(--font-mono);font-size:20px;font-weight:700;line-height:1;}
-.circle-lbl{font-family:var(--font-mono);font-size:8px;color:var(--text-mute);letter-spacing:1px;margin-top:3px;}
+.circle-lbl{font-family:var(--font-mono);font-size:9px;color:var(--text-mute);letter-spacing:1px;margin-top:3px;}
 .progress-info{text-align:center;width:100%;}
 .progress-type{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:1px;margin-bottom:3px;overflow-wrap:anywhere;}
-.progress-counts{font-family:var(--font-mono);font-size:10px;color:var(--text-mute);margin-bottom:5px;}
+.progress-counts{font-family:var(--font-mono);font-size:11px;color:var(--text-mute);margin-bottom:5px;}
 .bar-wrap{width:100%;background:var(--bg-deep);border-radius:4px;height:4px;overflow:hidden;margin-bottom:8px;}
 .bar-fill{display:block;height:100%;border-radius:4px;width:0;transition:width 1.2s cubic-bezier(0.4,0,0.2,1);}
-.time-row{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:9px;color:var(--text-mute);width:100%;}
-.time-row span{color:var(--text-dim);font-size:8px;}
+.time-row{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;color:var(--text-mute);width:100%;}
+.time-row span{color:var(--text-dim);font-size:9px;}
 .time-val{color:var(--text-prime);}
 
 .empty-state{text-align:center;padding:48px 20px;color:var(--text-dim);font-size:13px;line-height:1.6;}
@@ -104,6 +113,8 @@ select:focus,input:focus{border-color:var(--accent-blue);}
 </style>
 </head>
 <body>
+
+<noscript><div class="empty-state">Esta p&aacute;gina necesita JavaScript.</div></noscript>
 
 <!-- Cargando -->
 <div class="login-wrap" id="scrCarga"><div class="empty-state">Cargando&hellip;</div></div>
@@ -140,6 +151,7 @@ select:focus,input:focus{border-color:var(--accent-blue);}
     </div>
     <div class="topbar-right">
       <span id="actualizado" aria-live="polite"><span class="dot off"></span>Esperando datos&hellip;</span>
+      <button class="btn" type="button" id="temaBtn">Claro</button>
       <button class="btn" type="button" id="salirBtn">Salir</button>
     </div>
   </div>
@@ -172,7 +184,9 @@ import{initializeAppCheck,ReCaptchaV3Provider}from"https://www.gstatic.com/fireb
 
 // Mismo proyecto Firebase que el panel (dataforge-mio). Estos valores son publicos por diseno.
 const fCfg={apiKey:"AIzaSyBrTT-bK_UTZLSg6BVMiVviIQmAYFbGo9Q",authDomain:"dataforge-mio.firebaseapp.com",projectId:"dataforge-mio",storageBucket:"dataforge-mio.firebasestorage.app",messagingSenderId:"687282166437",appId:"1:687282166437:web:83772a6d56c52185784b4c"};
-const app=initializeApp(fCfg);
+// App con nombre propio: su sesion queda separada de la del panel admin (mismo dominio),
+// asi "Salir" aqui no cierra el panel y se puede probar con la cuenta de revisores.
+const app=initializeApp(fCfg,'sicun');
 // App Check: la clave de sitio reCAPTCHA v3 es publica. El dominio de esta pagina
 // debe estar permitido en esa clave (consola de reCAPTCHA).
 const RECAPTCHA_SITE_KEY="6LfXWiotAAAAAJkUjVREaZ0OGJ007YSqm3R74ImI";
@@ -298,6 +312,16 @@ function animar(raiz,suave){
   };
   if(suave)requestAnimationFrame(()=>requestAnimationFrame(fin));else fin();
 }
+
+/* ---------- Tema ---------- */
+function temaPinta(){$('temaBtn').textContent=document.documentElement.getAttribute('data-tema')==='claro'?'Oscuro':'Claro';}
+$('temaBtn').addEventListener('click',()=>{
+  const claro=document.documentElement.getAttribute('data-tema')==='claro';
+  if(claro)document.documentElement.removeAttribute('data-tema');else document.documentElement.setAttribute('data-tema','claro');
+  try{localStorage.setItem('vc-sicun-theme',claro?'oscuro':'claro');}catch(e){}
+  temaPinta();
+});
+temaPinta();
 
 /* ---------- Controles ---------- */
 $('lista').addEventListener('toggle',ev=>{
