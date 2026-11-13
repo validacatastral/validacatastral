@@ -179,10 +179,10 @@ const colorPct=p=>p>=80?'var(--accent-green)':(p>=20?'var(--accent-amber)':(p>0?
 
 function tarjeta(v,i){
   v=v||{};
-  const filas=n(v.filas),rev=n(v.rev),p=pctDe(rev,filas),sin=!!v.sinCol,color=sin?'var(--zero)':colorPct(p),off=C-(p/100)*C;
+  const filas=n(v.filas),rev=n(v.rev),p=pctDe(rev,filas),sin=!!v.sinCol,color=sin?'var(--accent-red)':colorPct(p),off=C-(p/100)*C;
   return'<div class="progress-card"><div class="circle-wrap"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="circle-bg" cx="50" cy="50" r="'+R+'"/><circle class="circle-fg" cx="50" cy="50" r="'+R+'" style="stroke:'+color+';stroke-dasharray:'+C+';stroke-dashoffset:'+C+'" data-offset="'+(sin?C:off)+'"/></svg>'+
     '<div class="circle-center"><div class="circle-pct" style="color:'+color+'">'+(sin?'!':p+'%')+'</div><div class="circle-lbl">'+(sin?'SIN COLUMNA':'REVISADO')+'</div></div></div>'+
-    '<div class="progress-info"><div class="progress-type">'+eh(v.nombre||'—')+'</div><div class="progress-counts">'+(sin?'No tiene columna de estado':fmt(rev)+' / '+fmt(filas)+' filas')+'</div>'+
+    '<div class="progress-info"><div class="progress-type">'+eh(v.nombre||'—')+'</div><div class="progress-counts">'+fmt(rev)+' / '+fmt(filas)+' filas'+(sin?'<div style="font:11.5px var(--font-body);color:var(--accent-red)">Sin columna de estado</div>':'')+'</div>'+
     '<div class="bar-wrap"><span class="bar-fill" data-pct="'+(sin?0:p)+'" style="background:'+color+';"></span></div>'+
     '<div class="time-row"><div><span class="full-label">APLICA</span><span class="short-label">AP</span><br><b class="time-val">'+fmt(v.ap)+'</b></div><div style="text-align:center;"><span class="full-label">NO APLICA</span><span class="short-label">NO</span><br><b class="time-val">'+fmt(v.na)+'</b></div><div style="text-align:right;"><span class="full-label">OTRO CAMBIO</span><span class="short-label">OTRO</span><br><b class="time-val">'+fmt(v.oc)+'</b></div></div></div></div>';
 }
