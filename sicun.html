@@ -93,6 +93,11 @@ select,input[type="text"],input[type="password"],input[type="search"]{background
     <div class="stats" id="stats"></div>
     <div class="tools" id="tools" hidden>
       <input type="search" id="filtro" placeholder="Buscar pol&iacute;gono&hellip;" aria-label="Buscar pol&iacute;gono" inputmode="numeric" style="min-width:200px;">
+      <select id="distrito" aria-label="Distrito">
+        <option value="">Distrito: todos</option>
+        <option value="INDEPENDENCIA">Independencia</option>
+        <option value="COMAS">Comas</option>
+      </select>
       <select id="orden" aria-label="Ordenar">
         <option value="pol">Orden: pol&iacute;gono</option>
         <option value="menor">Orden: menor avance</option>
@@ -164,11 +169,18 @@ function bloqueCruce(id){
   const title='Verificado: '+n(t.verificado)+' · Otro campo: '+n(t.otroCampo)+' · Sin cambio: '+n(t.sinCambio)+' · NO APLICA con cambio: '+n(t.noAplicaConCambio)+' · Publicado: '+fechaCruce(p.publicado,true);
   return'<span class="cruce" title="'+eh(title)+'"><a href="https://validacatastral.github.io/vc-pendientes/#pol='+eh(encodeURIComponent(id))+'" target="_blank" rel="noopener" style="color:inherit"><b style="color:'+colorCruce(r.pct)+'">SICUN confirma '+(r.pct===null?'—':r.pct+'%')+'</b></a><small>'+fmt(r.pendientes)+' pendientes · '+eh(fechaCruce(p.antes))+' → '+eh(fechaCruce(p.despues))+'</small></span>';
 }
+// Polígonos del distrito elegido (todos si no hay filtro de distrito).
+function polsDistrito(){
+  const d=$('distrito').value;
+  return d?pols.filter(p=>p&&String(p.distrito||'').trim().toUpperCase()===d):pols;
+}
 function pintarCruce(){
   const total={};
-  cruces.forEach(p=>{['filas','verificado','otroCampo','sinCambio','noEncontrado','invalido','noAplicaConCambio'].forEach(k=>{total[k]=(total[k]||0)+n((p.totales||{})[k]);});});
+  const delDistrito=polsDistrito(),ids=new Set(delDistrito.map(p=>claveCruce(p&&p.poligono)));
+  const conCruce=Array.from(cruces.values()).filter(p=>ids.has(claveCruce(p.poligono)));
+  conCruce.forEach(p=>{['filas','verificado','otroCampo','sinCambio','noEncontrado','invalido','noAplicaConCambio'].forEach(k=>{total[k]=(total[k]||0)+n((p.totales||{})[k]);});});
   const r=resumenCruce(total);
-  $('statsCruce').innerHTML='<div class="stat"><div class="stat-label">SICUN CONFIRMA</div><div class="stat-value" style="color:'+colorCruce(r.pct)+'">'+(r.pct===null?'—':r.pct+'%')+'<small>'+cruces.size+' de 7 polígonos con cruce</small></div></div>';
+  $('statsCruce').innerHTML='<div class="stat"><div class="stat-label">SICUN CONFIRMA</div><div class="stat-value" style="color:'+colorCruce(r.pct)+'">'+(r.pct===null?'—':r.pct+'%')+'<small>'+conCruce.length+' de '+delDistrito.length+' polígonos con cruce</small></div></div>';
   $('lista').querySelectorAll('.pol').forEach(el=>{
     const summary=el.querySelector('summary');
     const anterior=summary.querySelector('.cruce');
@@ -262,19 +274,20 @@ function pintar(suave){
     return;
   }
   // Totales
+  const base=polsDistrito();
   let F=0,RV=0,AP=0,NA=0,OC=0;
-  pols.forEach(p=>{const t=(p&&p.total)||{};F+=n(t.filas);RV+=n(t.rev);AP+=n(t.ap);NA+=n(t.na);OC+=n(t.oc);});
+  base.forEach(p=>{const t=(p&&p.total)||{};F+=n(t.filas);RV+=n(t.rev);AP+=n(t.ap);NA+=n(t.na);OC+=n(t.oc);});
   const st=(l,v,extra,c)=>'<div class="stat"><div class="stat-label">'+l+'</div><div class="stat-value"'+(c?' style="color:'+c+'"':'')+'>'+v+(extra?'<small>'+extra+'</small>':'')+'</div></div>';
-  stats.innerHTML=st('Polígonos',fmt(pols.length))+st('Revisado',pctDe(RV,F)+'%',fmt(RV)+' / '+fmt(F),'var(--accent-cyan)')+st('Aplica',fmt(AP))+st('No aplica',fmt(NA))+st('Otro cambio',fmt(OC))+st('Pendientes',fmt(Math.max(0,F-RV)));
+  stats.innerHTML=st('Polígonos',fmt(base.length))+st('Revisado',pctDe(RV,F)+'%',fmt(RV)+' / '+fmt(F),'var(--accent-cyan)')+st('Aplica',fmt(AP))+st('No aplica',fmt(NA))+st('Otro cambio',fmt(OC))+st('Pendientes',fmt(Math.max(0,F-RV)));
   tools.hidden=false;
 
   // Filtro y orden
   const q=$('filtro').value.trim().toLowerCase(),ord=$('orden').value;
-  let ver=pols.filter(p=>p&&(!q||String(p.poligono||'').toLowerCase().indexOf(q)>=0));
+  let ver=base.filter(p=>p&&(!q||String(p.poligono||'').toLowerCase().indexOf(q)>=0));
   const pp=p=>{const t=p.total||{};return pctDe(n(t.rev),n(t.filas));};
   ver=ver.slice().sort((a,b)=>ord==='menor'?pp(a)-pp(b):ord==='mayor'?pp(b)-pp(a):String(a.poligono||'').localeCompare(String(b.poligono||''),'es',{numeric:true}));
-  $('conteo').textContent=ver.length===pols.length?pols.length+' polígonos':ver.length+' de '+pols.length+' polígonos';
-  if(!ver.length){lista.innerHTML='<div class="empty-state">Ningún polígono coincide con «'+eh(q)+'».</div>';return;}
+  $('conteo').textContent=ver.length===base.length?base.length+' polígonos':ver.length+' de '+base.length+' polígonos';
+  if(!ver.length){lista.innerHTML='<div class="empty-state">'+(q?'Ningún polígono coincide con «'+eh(q)+'».':'No hay polígonos de este distrito.')+'</div>';return;}
 
   // La primera vez: abiertos si son pocos
   if(primera){primera=false;if(pols.length<=3)pols.forEach(p=>abiertos.add(String(p.poligono||'')));}
@@ -318,6 +331,7 @@ $('lista').addEventListener('toggle',ev=>{
   const id=d.getAttribute('data-pol');if(d.open)abiertos.add(id);else abiertos.delete(id);
 },true);
 $('filtro').addEventListener('input',()=>pintar());
+$('distrito').addEventListener('change',()=>pintar());
 $('orden').addEventListener('change',()=>pintar());
 $('abrirTodo').addEventListener('click',()=>{pols.forEach(p=>abiertos.add(String((p&&p.poligono)||'')));pintar();});
 $('cerrarTodo').addEventListener('click',()=>{abiertos.clear();pintar();});
