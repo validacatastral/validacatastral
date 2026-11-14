@@ -78,6 +78,7 @@ select,input[type="text"],input[type="password"],input[type="search"]{background
     </div>
     <div class="topbar-right">
       <span id="actualizado" aria-live="polite"><span class="dot off"></span>Esperando datos&hellip;</span>
+      <a class="btn" href="https://validacatastral.github.io/vc-pendientes/" target="_blank" rel="noopener" style="text-decoration:none">Ver pendientes ↗</a>
       <button class="btn" type="button" id="refrescarCruce">Refrescar cruce</button>
       <button class="btn" type="button" id="temaBtn">Claro</button>
       <button class="btn" type="button" id="salirBtn">Salir</button>
@@ -161,7 +162,7 @@ function bloqueCruce(id){
   if(!p)return'<span class="cruce" aria-label="Cruce SICUN: sin publicación">— sin cruce</span>';
   const t=p.totales||{},r=resumenCruce(t);
   const title='Verificado: '+n(t.verificado)+' · Otro campo: '+n(t.otroCampo)+' · Sin cambio: '+n(t.sinCambio)+' · NO APLICA con cambio: '+n(t.noAplicaConCambio)+' · Publicado: '+fechaCruce(p.publicado,true);
-  return'<span class="cruce" title="'+eh(title)+'"><b style="color:'+colorCruce(r.pct)+'">SICUN confirma '+(r.pct===null?'—':r.pct+'%')+'</b><small>'+fmt(r.pendientes)+' pendientes · '+eh(fechaCruce(p.antes))+' → '+eh(fechaCruce(p.despues))+'</small></span>';
+  return'<span class="cruce" title="'+eh(title)+'"><a href="https://validacatastral.github.io/vc-pendientes/#pol='+eh(encodeURIComponent(id))+'" target="_blank" rel="noopener" style="color:inherit"><b style="color:'+colorCruce(r.pct)+'">SICUN confirma '+(r.pct===null?'—':r.pct+'%')+'</b></a><small>'+fmt(r.pendientes)+' pendientes · '+eh(fechaCruce(p.antes))+' → '+eh(fechaCruce(p.despues))+'</small></span>';
 }
 function pintarCruce(){
   const total={};
